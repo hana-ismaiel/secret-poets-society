@@ -1,0 +1,66 @@
+const pool = require("../db");
+const bcrypt = require("bcrypt");
+
+const register = async (req, res) => {
+  const { username, email, password } = req.body;
+
+  if (!username || !email || !password) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
+  if (username.length > 50) {
+    return res.status(400).json({ message: "Username must be 50 characters or less" });
+  }
+  if (username.length < 3) {
+    return res.status(400).json({ message: "Username must be at least 3 characters" });
+  }
+  if (email.length > 254) {
+    return res.status(400).json({ message: "Email must be 254 characters or less" });
+  }
+  if (password.length < 8) {
+    return res.status(400).json({ message: "Password must be at least 8 characters" });
+  }
+
+  try {
+    // Check if username already exists in database
+    const existingUsername = await pool.query(
+      "SELECT * FROM users WHERE username = $1",
+      [username]
+    );
+    if (existingUsername.rows.length > 0) {
+      return res.status(400).json({ message: "Username is already taken" });
+    }
+
+    // Check if email already exists in database
+    const existingEmail= await pool.query(
+      "SELECT * FROM users WHERE email = $1",
+      [email]
+    );
+
+    if (existingEmail.rows.length > 0) {
+      return res.status(400).json({ message: "Email already in use" });
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Insert new user
+    await pool.query(
+      "INSERT INTO users (username, email, password) VALUES ($1, $2, $3)",
+      [username, email, hashedPassword]
+    );
+
+    // Fetch new user
+    const newUser = await pool.query(
+      "SELECT id, username, email, created_at FROM users WHERE email = $1",
+      [email]
+    );
+
+    res.status(201).json(newUser.rows[0]);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+module.exports = { register };
