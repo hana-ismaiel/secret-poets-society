@@ -1,11 +1,22 @@
 const express = require("express");
 const router = express.Router();
-const { createPoem, deletePoem, getAllPoems, getPoemById } = require("../controllers/poem.controller");
-const authenticateToken = require("../middleware/auth");
+const {
+  createPoem,
+  deletePoem,
+  editPoem,
+  getAllPoems,
+  getPoemById,
+  getUserPoems,
+} = require("../controllers/poem.controller");
+const auth = require("../middleware/auth");
+const optionalAuth = require("../middleware/optional-auth")
 
-router.post("/", authenticateToken, createPoem);
-router.delete("/:id", authenticateToken, deletePoem);
+router.post("/", auth, createPoem);
+router.delete("/:id", auth, deletePoem);
+router.put("/:id", auth, editPoem)
 router.get("/", getAllPoems);
 router.get("/:id", getPoemById);
+router.get("/user/:userId", optionalAuth, getUserPoems);
+
 
 module.exports = router;
