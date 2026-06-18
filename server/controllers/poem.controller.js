@@ -1,11 +1,15 @@
 const pool = require("../db");
 
 const createPoem = async (req, res) => {
-  const { title, content, anonymous } = req.body;
+  const { title, content, anonymous, categoryIds } = req.body;
   const userId = req.user.id;
 
   if (!title || !content) {
     return res.status(400).json({ message: "Title and content are required" });
+  }
+
+  if (categoryIds && categoryIds.length > 3) {
+    return res.status(400).json({ message: "You can select up to 3 categories" });
   }
 
   try {
@@ -14,6 +18,15 @@ const createPoem = async (req, res) => {
       RETURNING id, title, content, anonymous, created_at`,
       [title, content, anonymous ?? false, userId]
     );
+
+    if (categoryIds && categoryIds.length > 0) {
+      for (const categoryId of categoryIds) {
+        await pool.query(
+          "INSERT INTO poem_categories (poem_id, category_id) VALUES ($1, $2)",
+          [newPoem.rows[0].id, categoryId]
+        );
+      }
+    }
 
     res.status(201).json(newPoem.rows[0]);
 
@@ -56,10 +69,14 @@ const deletePoem = async (req, res) => {
 
 const editPoem = async (req, res) => {
   const { id } = req.params;
-  const { title, content, anonymous } = req.body;
+  const { title, content, anonymous, categoryIds } = req.body;
 
   if (!title || !content) {
     return res.status(400).json({ message: "Title and content are required" });
+  }
+
+  if (categoryIds && categoryIds.length > 3) {
+    return res.status(400).json({ message: "You can select up to 3 categories" });
   }
 
   const userId = req.user.id;
@@ -84,7 +101,21 @@ const editPoem = async (req, res) => {
       [title, content, anonymous ?? poem.rows[0].anonymous, id]
     );
 
-    res.status(201).json(editedPoem.rows[0]);
+    if (categoryIds) {
+      await pool.query(
+        "DELETE FROM poem_categories WHERE poem_id = $1", // Remove existing categories for that poem
+        [id]
+      );
+
+      for (const categoryId of categoryIds) {
+        await pool.query(
+          "INSERT INTO poem_categories (poem_id, category_id) VALUES ($1, $2)",
+          [id, categoryId]
+        );
+      }
+    }
+
+    res.status(200).json(editedPoem.rows[0]);
 
   } catch (error) {
     console.error(error);
@@ -110,7 +141,24 @@ const getAllPoems = async (req, res) => {
       ORDER BY poems.created_at DESC`
     );
 
-    res.status(200).json(poems.rows);
+    const poemCategories = await pool.query(
+      `SELECT 
+        poem_categories.poem_id,
+        categories.id,
+        categories.name
+      FROM poem_categories
+      JOIN categories ON poem_categories.category_id = categories.id`
+    );
+
+    // Append categories to each poem
+    const poemsWithCategories = poems.rows.map(poem => ({
+      ...poem,
+      categories: poemCategories.rows
+        .filter(poemCategory => poemCategory.poem_id === poem.id)
+        .map(poemCategory => ({ id: poemCategory.id, name: poemCategory.name }))
+    }));
+
+    res.status(200).json(poemsWithCategories);
 
   } catch (error) {
     console.error(error);
@@ -143,6 +191,18 @@ const getPoemById = async (req, res) => {
       return res.status(404).json({ message: "Poem not found" });
     }
 
+    const poemCategories = await pool.query(
+      `SELECT 
+        categories.id,
+        categories.name
+      FROM poem_categories
+      JOIN categories ON poem_categories.category_id = categories.id
+      WHERE poem_categories.poem_id = $1`,
+      [id]
+    );
+
+    poem.rows[0].categories = poemCategories.rows.map(poemCategory => ({ id: poemCategory.id, name: poemCategory.name }));
+
     res.status(200).json(poem.rows[0]);
 
   } catch (error) {
@@ -167,6 +227,9 @@ const getUserPoems = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
+    // Get all user poems
+    // If viewing someone else's poems, only fetch non-anonymous poems
+    // If viewing own poems, fetch all (anonymous and non-anonymous poems)
     const poems = await pool.query(
       `SELECT 
         poems.id,
@@ -184,7 +247,24 @@ const getUserPoems = async (req, res) => {
       [userId]
     );
 
-    res.status(200).json(poems.rows);
+    const poemCategories = await pool.query(
+      `SELECT 
+        poem_categories.poem_id,
+        categories.id,
+        categories.name
+      FROM poem_categories
+      JOIN categories ON poem_categories.category_id = categories.id`
+    );
+
+    // Append categories to each poem
+    const poemsWithCategories = poems.rows.map(poem => ({
+      ...poem,
+      categories: poemCategories.rows
+        .filter(poemCategory => poemCategory.poem_id === poem.id)
+        .map(poemCategory => ({ id: poemCategory.id, name: poemCategory.name }))
+    }));
+
+    res.status(200).json(poemsWithCategories);
 
   } catch (error) {
     console.error(error);
