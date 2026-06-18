@@ -16,7 +16,11 @@ app.use("/users", userRoutes);
 app.use("/poems", poemRoutes);
 app.use("/likes", likeRoutes);
 app.use("/comments", commentRoutes);
-app.use("categories", categoryRoutes);
+app.use("/categories", categoryRoutes);
+
+app.use((req, res) => {
+  res.status(404).json({ message: "Route not found" });
+});
 
 app.get("/", (req, res) => {
   res.send("✅");
