@@ -100,13 +100,9 @@ const getUserLikes = async (req, res) => {
         poems.id,
         poems.title,
         poems.content,
-        poems.anonymous,
         poems.created_at,
         likes.created_at AS liked_at,
-        CASE 
-          WHEN poems.anonymous = true THEN 'Anonymous'
-          ELSE users.username
-        END AS author
+        users.username AS author
       FROM likes
       JOIN poems ON likes.poem_id = poems.id
       JOIN users ON poems.user_id = users.id
