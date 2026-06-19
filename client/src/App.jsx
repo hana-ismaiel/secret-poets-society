@@ -1,10 +1,11 @@
 import { Routes, Route } from "react-router-dom"
+import NotFound from "./pages/NotFound"
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<h1>Home</h1>} />
-      <Route path="*" element={<h1>404 - Page Not Found</h1>} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   )
 }
