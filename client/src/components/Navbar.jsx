@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { useAuth } from "@/hooks/useAuth"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,7 +18,7 @@ const placeholderCategories = [
 
 function Navbar() {
   const location = useLocation()
-  const isLoggedIn = false;
+  const { user, logout } = useAuth()
 
   // Do not show Navbar if on login page or register page
   const hideNavbarRoutes = ["/login", "/register"]
@@ -49,8 +50,11 @@ function Navbar() {
       </div>
 
       <div>
-        {isLoggedIn ? (
-          <span>Profile placeholder</span>
+        {user ? (
+          <div className="flex items-center gap-2">
+            <Link to={`/users/${user.username}`}>{user.username}</Link>
+            <Button variant="outline" onClick={logout}>Sign Out</Button>
+          </div>
         ) : (
           <Link to="/login">
             <Button>Sign In</Button>

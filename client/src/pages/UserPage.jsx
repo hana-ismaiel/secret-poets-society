@@ -1,6 +1,9 @@
+import { useAuth } from "@/hooks/useAuth";
+
 function UserPage() {
+  const { user } = useAuth();
   return (
-    <div></div>
+    <div>{user.username} || "no user"</div>
   )
 }
 
