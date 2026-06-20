@@ -131,6 +131,7 @@ const getAllPoems = async (req, res) => {
         poems.title,
         poems.content,
         poems.created_at,
+        poems.user_id AS author_id,
         users.username AS author
       FROM poems
       JOIN users ON poems.user_id = users.id
@@ -172,6 +173,7 @@ const getPoemById = async (req, res) => {
         poems.title,
         poems.content,
         poems.created_at,
+        poems.user_id AS author_id,
         users.username AS author
       FROM poems
       JOIN users ON poems.user_id = users.id
@@ -224,6 +226,7 @@ const getUserPoems = async (req, res) => {
         poems.content,
         poems.created_at,
         poems.modified_at,
+        poems.user_id AS author_id,
         users.username AS author
       FROM poems
       JOIN users ON poems.user_id = users.id
