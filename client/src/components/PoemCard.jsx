@@ -5,7 +5,6 @@ function PoemCard({ poem }) {
   return (
     <Card className="mb-8 rounded-none">
       <CardHeader>
-        {/* <CardTitle className="text-2xl font-bold">{poem.title}</CardTitle> */}
         <Link to={`/poems/${poem.id}`} className="hover:underline">
           <CardTitle className="text-2xl font-bold">{poem.title}</CardTitle>
         </Link>
