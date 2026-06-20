@@ -16,7 +16,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/poems/:id" element={<PoemPage />} />
-        <Route path="/users/:username" element={<UserPage />} />
+        <Route path="/users/:id" element={<UserPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </>

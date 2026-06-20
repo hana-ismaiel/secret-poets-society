@@ -52,7 +52,7 @@ function Navbar() {
       <div>
         {user ? (
           <div className="flex items-center gap-2">
-            <Link to={`/users/${user.username}`}>{user.username}</Link>
+            <Link to={`/users/${user.id}`}>{user.username}</Link>
             <Button variant="outline" onClick={logout}>Sign Out</Button>
           </div>
         ) : (

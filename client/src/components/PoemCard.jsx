@@ -10,7 +10,7 @@ function PoemCard({ poem }) {
         </Link>
         <CardDescription className="text-lg">
             by {" "}
-            <Link to={`/users/${poem.author}`} className="text-primary hover:underline font-medium">
+            <Link to={`/users/${poem.author_id}`} className="text-primary hover:underline font-medium">
                 {poem.author}
             </Link>
         </CardDescription>

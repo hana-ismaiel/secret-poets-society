@@ -8,7 +8,7 @@ function Poem({ poem }) {
       <p className="text-lg mb-8">
         by{" "}
         <Link
-          to={`/users/${poem.author}`}
+          to={`/users/${poem.author_id}`}
           className="text-primary hover:underline font-medium"
         >
           {poem.author}
