@@ -1,12 +1,15 @@
 import { useParams } from "react-router-dom"
 import { useState, useEffect } from "react"
-import api from "@/lib/api"
 import PoemCard from "@/components/PoemCard"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Card, CardContent } from "@/components/ui/card"
+import { usePoems } from "@/hooks/usePoems"
+import { useUsers } from "@/hooks/useUsers"
 
 function UserPage() {
   const { id } = useParams()
+  const { getUserPoems } = usePoems()
+  const { getUserById } = useUsers()
   const [user, setUser] = useState(null)
   const [poems, setPoems] = useState([])
   const [loading, setLoading] = useState(true)
@@ -15,12 +18,12 @@ function UserPage() {
   useEffect(() => {
     async function fetchUserAndPoems() {
       try {
-        const [userResponse, poemsResponse] = await Promise.all([
-          api.get(`/users/${id}`),
-          api.get(`/poems/user/${id}`),
+        const [userData, poemsData] = await Promise.all([
+          getUserById(id),
+          getUserPoems(id),
         ])
-        setUser(userResponse.data)
-        setPoems(poemsResponse.data)
+        setUser(userData)
+        setPoems(poemsData)
       } catch (err) {
         setError(err.response?.data?.message || "Something went wrong")
       } finally {
@@ -29,6 +32,7 @@ function UserPage() {
     }
 
     fetchUserAndPoems()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
 
   if (loading) return <p className="text-center mt-10">Loading user...</p>

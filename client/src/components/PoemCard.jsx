@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Link } from "react-router-dom"
+import LikeButton from "./LikeButton"
 
 function PoemCard({ poem }) {
   return (
@@ -29,6 +30,9 @@ function PoemCard({ poem }) {
             ))}
           </div>
         )}
+        <div className="mt-4">
+          <LikeButton poemId={poem.id} />
+        </div>
       </CardContent>
     </Card>
   )
