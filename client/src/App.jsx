@@ -1,24 +1,32 @@
 import { Routes, Route } from "react-router-dom"
-import NotFoundPage from "./pages/NotFoundPage"
 import Navbar from "./components/Navbar"
+import Sidebar from "./components/Sidebar"
 import HomePage from "./pages/HomePage"
 import PoemPage from "./pages/PoemPage"
 import UserPage from "./pages/UserPage"
 import LoginPage from "./pages/LoginPage"
 import RegisterPage from "./pages/RegisterPage"
+import NotFoundPage from "./pages/NotFoundPage"
+import CreatePoemPage from "./pages/CreatePoemPage"
 
 function App() {
   return (
     <>
       <Navbar />
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/poems/:id" element={<PoemPage />} />
-        <Route path="/users/:id" element={<UserPage />} />
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
+      <div className="flex">
+        <Sidebar />
+        <main className="flex-1">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/poems/:id" element={<PoemPage />} />
+            <Route path="/users/:id" element={<UserPage />} />
+            <Route path="/poems/create" element={<CreatePoemPage />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </main>
+      </div>
     </>
   )
 }
