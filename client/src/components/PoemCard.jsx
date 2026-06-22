@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Link } from "react-router-dom"
 import LikeButton from "./LikeButton"
 import SaveButton from "./SaveButton"
+import PoemActions from "./PoemActions"
 import { useAuth } from "@/hooks/useAuth"
 
 function PoemCard({ poem }) {
@@ -9,7 +10,10 @@ function PoemCard({ poem }) {
   const isOwnPoem = currentUser && String(currentUser.id) === String(poem.author_id)
 
   return (
-    <Card className="mb-8 rounded-none">
+    <Card className="mb-8 rounded-none relative">
+      <div className="absolute top-4 right-4 z-10">
+        <PoemActions poem={poem} />
+      </div>
       <CardHeader>
         <Link to={`/poems/${poem.id}`} className="hover:underline">
           <CardTitle className="text-2xl font-bold">{poem.title}</CardTitle>

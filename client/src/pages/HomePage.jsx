@@ -21,7 +21,8 @@ function HomePage() {
     }
 
     fetchPoems()
-  })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   if (loading) return <p className="text-center mt-10">Loading poems...</p>
   if (error) return <p className="text-center mt-10 text-red-500">{error}</p>

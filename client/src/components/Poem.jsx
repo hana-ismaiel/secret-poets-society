@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom"
 import LikeButton from "./LikeButton"
 import SaveButton from "./SaveButton"
+import PoemActions from "./PoemActions"
 import { useAuth } from "@/hooks/useAuth"
 
 function Poem({ poem }) {
@@ -8,7 +9,10 @@ function Poem({ poem }) {
   const isOwnPoem = currentUser && String(currentUser.id) === String(poem.author_id)
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-12">
+    <div className="max-w-2xl mx-auto px-4 py-12 relative">
+      <div className="absolute top-12 right-4">
+        <PoemActions poem={poem} />
+      </div>
       <h1 className="text-3xl font-bold mb-2">{poem.title}</h1>
 
       <p className="text-lg mb-8">
