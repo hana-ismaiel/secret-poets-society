@@ -3,7 +3,7 @@ const pool = require("../db");
 // Like / unlike a poem
 const toggleLike = async (req, res) => {
   const { poemId } = req.params;
-  const user_id = req.user.id;
+  const userId = req.user.id;
 
   try {
     const poem = await pool.query(
@@ -18,14 +18,14 @@ const toggleLike = async (req, res) => {
     // Check if this user already liked this poem
     const existingLike = await pool.query(
       "SELECT * FROM likes WHERE user_id = $1 AND poem_id = $2",
-      [user_id, poemId]
+      [userId, poemId]
     );
 
     if (existingLike.rows.length > 0) {
       // Already liked — so unlike it
       await pool.query(
         "DELETE FROM likes WHERE user_id = $1 AND poem_id = $2",
-        [user_id, poemId]
+        [userId, poemId]
       );
 
       return res.status(200).json({ liked: false, message: "Poem unliked" });
@@ -34,7 +34,7 @@ const toggleLike = async (req, res) => {
     // Not liked yet — so like it
     await pool.query(
       "INSERT INTO likes (user_id, poem_id) VALUES ($1, $2)",
-      [user_id, poemId]
+      [userId, poemId]
     );
 
     res.status(200).json({ liked: true, message: "Poem liked" });

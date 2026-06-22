@@ -6,6 +6,7 @@ const poemRoutes = require("./routes/poem.route");
 const likeRoutes = require("./routes/like.route");
 const commentRoutes = require("./routes/comment.route");
 const categoryRoutes = require("./routes/category.route");
+const savedPoemRoutes = require("./routes/savedPoem.route");
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use("/poems", poemRoutes);
 app.use("/likes", likeRoutes);
 app.use("/comments", commentRoutes);
 app.use("/categories", categoryRoutes);
+app.use("/saved", savedPoemRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });
