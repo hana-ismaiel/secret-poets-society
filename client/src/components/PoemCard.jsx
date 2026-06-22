@@ -2,8 +2,12 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Link } from "react-router-dom"
 import LikeButton from "./LikeButton"
 import SaveButton from "./SaveButton"
+import { useAuth } from "@/hooks/useAuth"
 
 function PoemCard({ poem }) {
+  const { user: currentUser } = useAuth()
+  const isOwnPoem = currentUser && String(currentUser.id) === String(poem.author_id)
+
   return (
     <Card className="mb-8 rounded-none">
       <CardHeader>
@@ -33,7 +37,7 @@ function PoemCard({ poem }) {
         )}
         <div className="mt-6 pt-3 border-t flex items-center gap-4">
           <LikeButton poemId={poem.id} />
-          <SaveButton poemId={poem.id} />
+          {!isOwnPoem && <SaveButton poemId={poem.id} />}
         </div>
       </CardContent>
     </Card>

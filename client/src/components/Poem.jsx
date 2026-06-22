@@ -1,8 +1,12 @@
 import { Link } from "react-router-dom"
 import LikeButton from "./LikeButton"
 import SaveButton from "./SaveButton"
+import { useAuth } from "@/hooks/useAuth"
 
 function Poem({ poem }) {
+  const { user: currentUser } = useAuth()
+  const isOwnPoem = currentUser && String(currentUser.id) === String(poem.author_id)
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-12">
       <h1 className="text-3xl font-bold mb-2">{poem.title}</h1>
@@ -36,7 +40,7 @@ function Poem({ poem }) {
 
       <div className="mt-6 pt-3 border-t flex items-center gap-4">
         <LikeButton poemId={poem.id} />
-        <SaveButton poemId={poem.id} />
+        {!isOwnPoem && <SaveButton poemId={poem.id} />}
       </div>
       
     </div>
