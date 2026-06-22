@@ -102,7 +102,8 @@ const getUserLikes = async (req, res) => {
         poems.content,
         poems.created_at,
         likes.created_at AS liked_at,
-        users.username AS author
+        users.username AS author,
+        poems.user_id AS author_id
       FROM likes
       JOIN poems ON likes.poem_id = poems.id
       JOIN users ON poems.user_id = users.id

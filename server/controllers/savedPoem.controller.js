@@ -15,6 +15,11 @@ const toggleSaved = async (req, res) => {
       return res.status(404).json({ message: "Poem not found" });
     }
 
+    // Cannot save own poem
+    if (poem.rows[0].user_id === userId) {
+      return res.status(400).json({ message: "You cannot save your own poem" });
+    }
+
     // Check if this user already saved this poem
     const existingSave = await pool.query(
       "SELECT * FROM saved_poems WHERE user_id = $1 AND poem_id = $2",
