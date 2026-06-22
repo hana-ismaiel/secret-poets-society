@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom"
-import { Home, Users, TrendingUp, PenSquare } from "lucide-react"
+import { Home, Users, TrendingUp, PenSquare, Tags } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/hooks/useAuth"
 
@@ -7,6 +7,7 @@ const navItems = [
   { label: "All Poems", path: "/", icon: Home },
   { label: "Following", path: "/following", icon: Users },
   { label: "Popular", path: "/popular", icon: TrendingUp },
+  { label: "Explore Themes", path: "/categories", icon: Tags },
 ]
 
 
