@@ -34,7 +34,7 @@ const toggleSaved = async (req, res) => {
     // Not saved yet — so save it
     await pool.query(
       "INSERT INTO saved_poems (user_id, poem_id) VALUES ($1, $2)",
-      [user_id, poemId]
+      [userId, poemId]
     );
 
     res.status(200).json({ saved: true, message: "Poem saved" });
