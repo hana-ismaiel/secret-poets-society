@@ -19,7 +19,7 @@ function PoemCard({ poem }) {
       </CardHeader>
       <CardContent>
         <p className="whitespace-pre-line">{poem.content}</p>
-        {poem.categories.length > 0 && (
+        {poem.categories && poem.categories.length > 0 && (
           <div className="flex gap-2 mt-4">
             {poem.categories.map((category) => (
               <span

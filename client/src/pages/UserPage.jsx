@@ -1,80 +1,132 @@
 import { useParams } from "react-router-dom"
 import { useState, useEffect } from "react"
+import { Feather, Bookmark, Heart } from "lucide-react"
 import PoemCard from "@/components/PoemCard"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Card, CardContent } from "@/components/ui/card"
+import UserProfileCard from "@/components/UserProfileCard"
+import { Button } from "@/components/ui/button"
+import { useAuth } from "@/hooks/useAuth"
 import { usePoems } from "@/hooks/usePoems"
 import { useUsers } from "@/hooks/useUsers"
+import { useSaves } from "@/hooks/useSaves"
+import { useLikes } from "@/hooks/useLikes"
 
 function UserPage() {
-  const { id } = useParams()
-  const { getUserPoems } = usePoems()
+  const { id } = useParams() 
+  const { user: currentUser } = useAuth() // Current logged in user
+  
   const { getUserById } = useUsers()
-  const [user, setUser] = useState(null)
+  const { getUserPoems } = usePoems()
+  const { getUserSaves } = useSaves()
+  const { getUserLikes } = useLikes()
+
+  const [profileUser, setProfileUser] = useState(null) // User of profile you're viewing
   const [poems, setPoems] = useState([])
+  const [activeTab, setActiveTab] = useState("poems")
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [feedLoading, setFeedLoading] = useState(false)
+
+  const isOwnProfile = currentUser && String(currentUser.id) === String(id)
 
   useEffect(() => {
-    async function fetchUserAndPoems() {
+    async function loadProfile() {
+      setLoading(true)
       try {
-        const [userData, poemsData] = await Promise.all([
-          getUserById(id),
-          getUserPoems(id),
-        ])
-        setUser(userData)
-        setPoems(poemsData)
+        const userData = await getUserById(id)
+        setProfileUser(userData)
+        setActiveTab("poems") 
       } catch (err) {
-        setError(err.response?.data?.message || "Something went wrong")
+        console.error("User not found", err)
       } finally {
         setLoading(false)
       }
     }
-
-    fetchUserAndPoems()
+    loadProfile()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
 
-  if (loading) return <p className="text-center mt-10">Loading user...</p>
-  if (error) return <p className="text-center mt-10 text-red-500">{error}</p>
+  useEffect(() => {
+    if (!profileUser) return
 
-  const joinedDate = new Date(user.created_at).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-  })
+    async function loadFeed() {
+      setFeedLoading(true)
+      try {
+        let data = []
+        
+        if (activeTab === "poems") {
+          data = await getUserPoems(id)
+        } else if (activeTab === "saved" && isOwnProfile) {
+          data = await getUserSaves() 
+        } else if (activeTab === "liked" && isOwnProfile) {
+          data = await getUserLikes() 
+        }
+        
+        setPoems(data)
+      } catch (err) {
+        console.error("Error fetching feed rows:", err)
+      } finally {
+        setFeedLoading(false)
+      }
+    }
+
+    loadFeed()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab, id, !!profileUser, isOwnProfile])
+
+  if (loading) return <p className="text-center mt-10">Loading profile...</p>
+  if (!profileUser) return <p className="text-center mt-10 text-red-500">User not found</p>
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8 flex gap-8">
+    <div className="max-w-5xl mx-auto px-4 py-8 flex flex-col md:flex-row gap-8">
       <div className="flex-1 flex flex-col gap-8">
-        {poems.length === 0 ? (
-          <p className="text-center text-muted-foreground mt-10">
-            No poems published yet
-          </p>
+        <h2 className="text-xl font-bold border-b pb-2">
+          {(() => {
+            if (!isOwnProfile) return `${profileUser.username}'s Poems`
+            if (activeTab === "saved") return "My Saved Poems"
+            if (activeTab === "liked") return "My Liked Poems"
+            return "My Poems"
+          })()}
+        </h2>
+
+        {feedLoading ? (
+          <p className="text-center text-muted-foreground mt-10">Loading poems...</p>
+        ) : poems.length === 0 ? (
+          <p className="text-center text-muted-foreground mt-10">No poems found.</p>
         ) : (
           poems.map((poem) => <PoemCard key={poem.id} poem={poem} />)
         )}
       </div>
 
-      <div className="w-64">
-        <Card>
-          <CardContent className="flex flex-col items-center text-center pt-6">
-            <Avatar className="w-20 h-20 mb-4">
-              <AvatarFallback className="text-xl">
-                {user.username.charAt(0).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
+      <div className="w-full md:w-64 flex flex-col gap-4">
+        <UserProfileCard user={profileUser} />
 
-            <h2 className="text-lg font-semibold">{user.username}</h2>
-
-            <p className="text-sm text-muted-foreground mt-1">
-              Joined {joinedDate}
-            </p>
-
-            <p className="text-sm text-muted-foreground mt-1">
-              {poems.length} {poems.length === 1 ? "poem" : "poems"}
-            </p>
-          </CardContent>
-        </Card>
+        {isOwnProfile && (
+          <div className="flex flex-col gap-1">
+            <Button
+              variant={activeTab === "poems" ? "default" : "ghost"}
+              className="justify-start rounded-none font-medium h-10 w-full gap-2"
+              onClick={() => setActiveTab("poems")}
+            >
+              <Feather size={16} />
+              My Poems
+            </Button>
+            <Button
+              variant={activeTab === "saved" ? "default" : "ghost"}
+              className="justify-start rounded-none font-medium h-10 w-full gap-2"
+              onClick={() => setActiveTab("saved")}
+            >
+              <Bookmark size={16} />
+              Saved
+            </Button>
+            <Button
+              variant={activeTab === "liked" ? "default" : "ghost"}
+              className="justify-start rounded-none font-medium h-10 w-full gap-2"
+              onClick={() => setActiveTab("liked")}
+            >
+              <Heart size={16} />
+              Liked
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   )
