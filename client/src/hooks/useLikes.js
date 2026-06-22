@@ -16,5 +16,10 @@ export function useLikes() {
     return response.data
   }
 
-  return { toggleLike, getLikeCount, checkUserLiked }
+  async function getUserLikes() {
+    const response = await api.get("/likes/my-likes")
+    return response.data
+  }
+
+  return { toggleLike, getLikeCount, checkUserLiked, getUserLikes }
 }

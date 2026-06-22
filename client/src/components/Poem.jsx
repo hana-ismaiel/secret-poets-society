@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom"
 import LikeButton from "./LikeButton"
+import SaveButton from "./SaveButton"
 
 function Poem({ poem }) {
   return (
@@ -33,8 +34,9 @@ function Poem({ poem }) {
         </div>
       )}
 
-      <div className="flex flex-wrap mt-10">
+      <div className="mt-6 pt-3 border-t flex items-center gap-4">
         <LikeButton poemId={poem.id} />
+        <SaveButton poemId={poem.id} />
       </div>
       
     </div>
