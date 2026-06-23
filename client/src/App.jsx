@@ -9,6 +9,7 @@ import RegisterPage from "./pages/RegisterPage"
 import NotFoundPage from "./pages/NotFoundPage"
 import CreatePoemPage from "./pages/CreatePoemPage"
 import EditPoemPage from "./pages/EditPoemPage"
+import FollowingPage from "./pages/FollowingPage"
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
             <Route path="/poems/edit/:id" element={<EditPoemPage />} />
             <Route path="/poems/:id" element={<PoemPage />} />
             <Route path="/users/:id" element={<UserPage />} />
+            <Route path="/following" element={<FollowingPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </main>

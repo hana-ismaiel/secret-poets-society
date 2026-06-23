@@ -3,6 +3,7 @@ import { useState, useEffect } from "react"
 import { Feather, Bookmark, Heart } from "lucide-react"
 import PoemCard from "@/components/PoemCard"
 import UserProfileCard from "@/components/UserProfileCard"
+import FollowButton from "@/components/FollowButton"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/hooks/useAuth"
 import { usePoems } from "@/hooks/usePoems"
@@ -98,6 +99,10 @@ function UserPage() {
 
       <div className="w-full md:w-64 flex flex-col gap-4">
         <UserProfileCard user={profileUser} />
+
+        {!isOwnProfile && currentUser && (
+          <FollowButton userId={profileUser.id} />
+        )}
 
         {isOwnProfile && (
           <div className="flex flex-col gap-1">
