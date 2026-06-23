@@ -31,5 +31,10 @@ export function usePoems() {
     return response.data
   }
 
-  return { getAllPoems, getPoemById, getUserPoems, createPoem, editPoem, deletePoem }
+  async function getPoemsByCategory(categoryId) {
+  const response = await api.get(`/poems/category/${categoryId}`)
+  return response.data
+}
+
+  return { getAllPoems, getPoemById, getUserPoems, createPoem, editPoem, deletePoem, getPoemsByCategory}
 }

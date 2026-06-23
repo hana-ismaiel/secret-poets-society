@@ -260,11 +260,67 @@ const getUserPoems = async (req, res) => {
   }
 };
 
+const getPoemsByCategory = async (req, res) => {
+  const { categoryId } = req.params;
+
+  try {
+    const category = await pool.query(
+      "SELECT id, name FROM categories WHERE id = $1",
+      [categoryId]
+    );
+
+    if (category.rows.length === 0) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+
+    // Find the poems that are tagged with the chosen category
+    const poems = await pool.query(
+      `SELECT 
+        poems.id,
+        poems.title,
+        poems.content,
+        poems.created_at,
+        poems.user_id AS author_id,
+        users.username AS author
+      FROM poems
+      JOIN users ON poems.user_id = users.id
+      JOIN poem_categories ON poems.id = poem_categories.poem_id
+      WHERE poem_categories.category_id = $1
+      ORDER BY poems.created_at DESC`,
+      [categoryId]
+    );
+
+    const poemCategories = await pool.query(
+      `SELECT 
+        poem_categories.poem_id,
+        categories.id,
+        categories.name
+      FROM poem_categories
+      JOIN categories ON poem_categories.category_id = categories.id`
+    );
+
+    // Append categories to each poem
+    const poemsWithCategories = poems.rows.map(poem => ({
+      ...poem,
+      categories: poemCategories.rows
+        .filter(poemCategory => poemCategory.poem_id === poem.id)
+        .map(poemCategory => ({ id: poemCategory.id, name: poemCategory.name }))
+    }));
+
+    res.status(200).json({ category: category.rows[0], poems: poemsWithCategories });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 module.exports = {
   createPoem,
   deletePoem,
   editPoem,
   getAllPoems,
   getPoemById,
-  getUserPoems
+  getUserPoems,
+  getPoemsByCategory
 };
