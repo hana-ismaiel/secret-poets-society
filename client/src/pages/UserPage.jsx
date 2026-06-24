@@ -1,15 +1,16 @@
 import { useParams } from "react-router-dom"
 import { useState, useEffect } from "react"
-import { Feather, Bookmark, Heart } from "lucide-react"
 import PoemCard from "@/components/PoemCard"
 import UserProfileCard from "@/components/UserProfileCard"
 import FollowButton from "@/components/FollowButton"
-import { Button } from "@/components/ui/button"
+import UserListItem from "@/components/UserListItem"
+import ProfileTabs from "@/components/ProfileTabs"
 import { useAuth } from "@/hooks/useAuth"
 import { usePoems } from "@/hooks/usePoems"
 import { useUsers } from "@/hooks/useUsers"
 import { useSaves } from "@/hooks/useSaves"
 import { useLikes } from "@/hooks/useLikes"
+import { useFollows } from "@/hooks/useFollows"
 
 function UserPage() {
   const { id } = useParams() 
@@ -19,14 +20,16 @@ function UserPage() {
   const { getUserPoems } = usePoems()
   const { getUserSaves } = useSaves()
   const { getUserLikes } = useLikes()
+  const { getFollowers, getFollowing } = useFollows()
 
   const [profileUser, setProfileUser] = useState(null) // User of profile you're viewing
-  const [poems, setPoems] = useState([])
+  const [items, setItems] = useState([]) // poems OR users, depending on tab
   const [activeTab, setActiveTab] = useState("poems")
   const [loading, setLoading] = useState(true)
   const [feedLoading, setFeedLoading] = useState(false)
 
   const isOwnProfile = currentUser && String(currentUser.id) === String(id)
+  const isUserListTab = activeTab === "followers" || activeTab === "following"
 
   useEffect(() => {
     async function loadProfile() {
@@ -56,14 +59,18 @@ function UserPage() {
         if (activeTab === "poems") {
           data = await getUserPoems(id)
         } else if (activeTab === "saved" && isOwnProfile) {
-          data = await getUserSaves() 
+          data = await getUserSaves()
         } else if (activeTab === "liked" && isOwnProfile) {
-          data = await getUserLikes() 
+          data = await getUserLikes()
+        } else if (activeTab === "followers") {
+          data = await getFollowers(id)
+        } else if (activeTab === "following") {
+          data = await getFollowing(id)
         }
-        
-        setPoems(data)
+        setItems(data)
       } catch (err) {
         console.error("Error fetching feed rows:", err)
+        setItems([]) 
       } finally {
         setFeedLoading(false)
       }
@@ -71,7 +78,12 @@ function UserPage() {
 
     loadFeed()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab, id, !!profileUser, isOwnProfile])
+  }, [activeTab, id, isOwnProfile])
+
+function handleTabChange(newTab) {
+  setItems([])
+  setActiveTab(newTab)
+}
 
   if (loading) return <p className="text-center mt-10">Loading profile...</p>
   if (!profileUser) return <p className="text-center mt-10 text-red-500">User not found</p>
@@ -84,16 +96,24 @@ function UserPage() {
             if (!isOwnProfile) return `${profileUser.username}'s Poems`
             if (activeTab === "saved") return "My Saved Poems"
             if (activeTab === "liked") return "My Liked Poems"
+            if (activeTab === "followers") return "Followers"
+            if (activeTab === "following") return "Following"
             return "My Poems"
           })()}
         </h2>
 
         {feedLoading ? (
-          <p className="text-center text-muted-foreground mt-10">Loading poems...</p>
-        ) : poems.length === 0 ? (
-          <p className="text-center text-muted-foreground mt-10">No poems found.</p>
+          <p className="text-center text-muted-foreground mt-10">Loading...</p>
+        ) : items.length === 0 ? (
+          <p className="text-center text-muted-foreground mt-10">
+            {isUserListTab ? "No users found." : "No poems found."}
+          </p>
+        ) : isUserListTab ? (
+          <div className="flex flex-col">
+            {items.map((u) => <UserListItem key={u.id} user={u} />)}
+          </div>
         ) : (
-          poems.map((poem) => <PoemCard key={poem.id} poem={poem} />)
+          items.map((poem) => <PoemCard key={poem.id} poem={poem} />)
         )}
       </div>
 
@@ -104,34 +124,11 @@ function UserPage() {
           <FollowButton userId={profileUser.id} />
         )}
 
-        {isOwnProfile && (
-          <div className="flex flex-col gap-1">
-            <Button
-              variant={activeTab === "poems" ? "default" : "ghost"}
-              className="justify-start rounded-none font-medium h-10 w-full gap-2"
-              onClick={() => setActiveTab("poems")}
-            >
-              <Feather size={16} />
-              My Poems
-            </Button>
-            <Button
-              variant={activeTab === "saved" ? "default" : "ghost"}
-              className="justify-start rounded-none font-medium h-10 w-full gap-2"
-              onClick={() => setActiveTab("saved")}
-            >
-              <Bookmark size={16} />
-              Saved
-            </Button>
-            <Button
-              variant={activeTab === "liked" ? "default" : "ghost"}
-              className="justify-start rounded-none font-medium h-10 w-full gap-2"
-              onClick={() => setActiveTab("liked")}
-            >
-              <Heart size={16} />
-              Liked
-            </Button>
-          </div>
-        )}
+        <ProfileTabs 
+          activeTab={activeTab} 
+          onTabChange={handleTabChange} 
+          isOwnProfile={isOwnProfile} 
+        />
       </div>
     </div>
   )

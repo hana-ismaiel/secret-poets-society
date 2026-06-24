@@ -26,5 +26,23 @@ export function useFollows() {
     return response.data
   }
 
-  return { toggleFollow, checkIsFollowing, getFollowerCount, getFollowingCount, getFollowingFeed }
+  async function getFollowers(userId) {
+  const response = await api.get(`/follows/${userId}/followers`)
+  return response.data
+}
+
+async function getFollowing(userId) {
+  const response = await api.get(`/follows/${userId}/following`)
+  return response.data
+}
+
+  return { 
+    toggleFollow,
+    checkIsFollowing,
+    getFollowerCount,
+    getFollowingCount,
+    getFollowingFeed,
+    getFollowers,
+    getFollowing,
+  }
 }

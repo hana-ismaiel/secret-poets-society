@@ -128,10 +128,55 @@ const getFollowingFeed = async (req, res) => {
   }
 };
 
+const getFollowers = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const followers = await pool.query(
+      `SELECT users.id, users.username, users.created_at
+       FROM follows
+       JOIN users ON follows.follower_id = users.id
+       WHERE follows.following_id = $1
+       ORDER BY follows.created_at DESC`,
+      [userId]
+    );
+
+    res.status(200).json(followers.rows);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+const getFollowing = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const following = await pool.query(
+      `SELECT users.id, users.username, users.created_at
+       FROM follows
+       JOIN users ON follows.following_id = users.id
+       WHERE follows.follower_id = $1
+       ORDER BY follows.created_at DESC`,
+      [userId]
+    );
+
+    res.status(200).json(following.rows);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
 module.exports = {
   toggleFollow,
   checkIsFollowing,
   getFollowerCount,
   getFollowingCount,
   getFollowingFeed,
+  getFollowers,
+  getFollowing,
 };
