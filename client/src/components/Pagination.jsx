@@ -4,10 +4,30 @@ import { Button } from "@/components/ui/button"
 function Pagination({ currentPage, totalPages, onPageChange }) {
   if (totalPages <= 1) return null
 
+  // Helper helper function to render buttons for page numbers from [start, end]
+  const renderButtons = (start, end) => {
+    const buttons = []
+    for (let i = start; i <= end; i++) {
+      buttons.push(
+        <Button
+          key={i}
+          variant={currentPage === i ? "default" : "ghost"}
+          size="sm"
+          className="h-8 w-8 rounded-none p-0 font-medium text-xs"
+          onClick={() => onPageChange(i)}
+        >
+          {i}
+        </Button>
+      )
+    }
+    return buttons
+  }
+
   return (
     <div className="flex items-center justify-center border-t pt-4 mt-4 select-none">
       <div className="flex items-center gap-1">
         
+        {/* Back arrow */}
         <Button
           variant="ghost"
           size="icon"
@@ -19,65 +39,42 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
         </Button>
 
         {(() => {
-          const pages = []
+          // If 10 or less total pages, display all
+          if (totalPages <= 10) {
+            return renderButtons(1, totalPages)
+          }
+
+          // If 11 or more total pages
           
-          // Determine starting and ending page positions for a 5-digit window block
-          let startPage = Math.max(1, currentPage - 2)
-          let endPage = Math.min(totalPages, currentPage + 2)
-
-          // Adjust bounds if forced against the starting boundary wall
-          if (currentPage <= 3) {
-            startPage = 1
-            endPage = Math.min(5, totalPages)
+          // Case A: First 5 pages -> < 1 2 3 4 5 ... Last >
+          if (currentPage <= 5) {
+            return [
+              ...renderButtons(1, 5),
+              <span key="right-ellipsis" className="text-muted-foreground px-1 text-xs">...</span>,
+              ...renderButtons(totalPages, totalPages)
+            ]
           }
 
-          // Adjust bounds if forced against the ending boundary wall
-          if (currentPage >= totalPages - 2) {
-            startPage = Math.max(1, totalPages - 4)
-            endPage = totalPages
+          // Case B: Right Last 5 pages -> < 1 ... (Last-4) (Last-3) (Last-2) (Last-1) Last >
+          if (currentPage >= totalPages - 4) {
+            return [
+              ...renderButtons(1, 1),
+              <span key="left-ellipsis" className="text-muted-foreground px-1 text-xs">...</span>,
+              ...renderButtons(totalPages - 4, totalPages)
+            ]
           }
 
-          // 1. Render the initial block digits up through our endPage target bounds
-          for (let i = startPage; i <= endPage; i++) {
-            pages.push(
-              <Button
-                key={i}
-                variant={currentPage === i ? "default" : "ghost"}
-                size="sm"
-                className="h-8 w-8 rounded-none p-0 font-medium text-xs"
-                onClick={() => onPageChange(i)}
-              >
-                {i}
-              </Button>
-            )
-          }
-
-          if (endPage < totalPages) {
-            // Only add an ellipsis separator block if there's a numeric gap
-            if (endPage < totalPages - 1) {
-              pages.push(
-                <span key="right-ellipsis" className="text-muted-foreground px-1 text-xs">
-                  ...
-                </span>
-              )
-            }
-            
-            pages.push(
-              <Button
-                key={totalPages}
-                variant={currentPage === totalPages ? "default" : "ghost"}
-                size="sm"
-                className="h-8 w-8 rounded-none p-0 font-medium text-xs"
-                onClick={() => onPageChange(totalPages)}
-              >
-                {totalPages}
-              </Button>
-            )
-          }
-
-          return pages
+          // Case C: Between first 5 and last 5 -> < 1 ... x-2 x-1 X x+1 x+2 ... Last >
+          return [
+            ...renderButtons(1, 1),
+            <span key="left-ellipsis" className="text-muted-foreground px-1 text-xs">...</span>,
+            ...renderButtons(currentPage - 2, currentPage + 2),
+            <span key="right-ellipsis" className="text-muted-foreground px-1 text-xs">...</span>,
+            ...renderButtons(totalPages, totalPages)
+          ]
         })()}
 
+        {/* Forward arrow */}
         <Button
           variant="ghost"
           size="icon"
