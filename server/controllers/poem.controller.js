@@ -1,5 +1,7 @@
 const pool = require("../db");
 
+const POEMS_PER_PAGE = 20;
+
 const createPoem = async (req, res) => {
   const { title, content, categoryIds } = req.body;
   const userId = req.user.id;
@@ -124,7 +126,15 @@ const editPoem = async (req, res) => {
 };
 
 const getAllPoems = async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || POEMS_PER_PAGE;
+  const offset = (page - 1) * limit;
+
   try {
+    const countResult = await pool.query("SELECT COUNT(*) FROM poems");
+    const totalPoems = parseInt(countResult.rows[0].count);
+    const totalPages = Math.ceil(totalPoems / limit);
+
     const poems = await pool.query(
       `SELECT
         poems.id,
@@ -135,19 +145,28 @@ const getAllPoems = async (req, res) => {
         users.username AS author
       FROM poems
       JOIN users ON poems.user_id = users.id
-      ORDER BY poems.created_at DESC`
+      ORDER BY poems.created_at DESC
+      LIMIT $1 OFFSET $2`,
+      [limit, offset]
     );
 
-    const poemCategories = await pool.query(
-      `SELECT 
-        poem_categories.poem_id,
-        categories.id,
-        categories.name
-      FROM poem_categories
-      JOIN categories ON poem_categories.category_id = categories.id`
-    );
+    // Attach categories only for the current batch of poems 
+    const poemIds = poems.rows.map(poem => poem.id);
+    let poemCategories = { rows: [] };
+    
+    if (poemIds.length > 0) {
+      poemCategories = await pool.query(
+        `SELECT 
+          poem_categories.poem_id,
+          categories.id,
+          categories.name
+        FROM poem_categories
+        JOIN categories ON poem_categories.category_id = categories.id
+        WHERE poem_categories.poem_id = ANY($1)`,
+        [poemIds]
+      );
+    }
 
-    // Append categories to each poem
     const poemsWithCategories = poems.rows.map(poem => ({
       ...poem,
       categories: poemCategories.rows
@@ -155,7 +174,15 @@ const getAllPoems = async (req, res) => {
         .map(poemCategory => ({ id: poemCategory.id, name: poemCategory.name }))
     }));
 
-    res.status(200).json(poemsWithCategories);
+    res.status(200).json({
+      poems: poemsWithCategories,
+      pagination: {
+        totalPoems,
+        totalPages,
+        currentPage: page,
+        limit
+      }
+    });
 
   } catch (error) {
     console.error(error);

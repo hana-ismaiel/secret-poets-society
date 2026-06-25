@@ -1,8 +1,12 @@
 import api from "@/lib/api"
 
+
 export function usePoems() {
-  async function getAllPoems() {
-    const response = await api.get("/poems")
+
+  const POEMS_PER_PAGE = 20
+  
+  async function getAllPoems(page = 1, limit = POEMS_PER_PAGE) {
+    const response = await api.get(`/poems?page=${page}&limit=${limit}`)
     return response.data
   }
 
@@ -42,6 +46,7 @@ export function usePoems() {
   }
 
   return {
+    POEMS_PER_PAGE,
     getAllPoems,
     getPoemById,
     getUserPoems,
