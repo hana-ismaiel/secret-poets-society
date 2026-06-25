@@ -315,6 +315,61 @@ const getPoemsByCategory = async (req, res) => {
   }
 };
 
+const getPopularPoems = async (req, res) => {
+  const { timeframe } = req.query; // "24h", "7d", or "all"
+
+  let timeCondition = "";
+
+  // SQL constraint based on request query
+  if (timeframe === "24h") {
+    timeCondition = "WHERE likes.created_at >= NOW() - INTERVAL '1 day'";
+  } else if (timeframe === "7d") {
+    timeCondition = "WHERE likes.created_at >= NOW() - INTERVAL '7 days'";
+  }
+
+  try {
+    const popularPoems = await pool.query(
+      `SELECT 
+        poems.id,
+        poems.title,
+        poems.content,
+        poems.created_at,
+        poems.user_id AS author_id,
+        users.username AS author,
+        COUNT(likes.id)::int AS like_count
+      FROM poems
+      JOIN users ON poems.user_id = users.id
+      LEFT JOIN likes ON poems.id = likes.poem_id
+      ${timeCondition}
+      GROUP BY poems.id, users.username
+      ORDER BY like_count DESC, poems.created_at DESC`
+    );
+
+    const poemCategories = await pool.query(
+      `SELECT 
+        poem_categories.poem_id,
+        categories.id,
+        categories.name
+      FROM poem_categories
+      JOIN categories ON poem_categories.category_id = categories.id`
+    );
+
+    // Append categories to each poem
+    const poemsWithCategories = popularPoems.rows.map(poem => ({
+      ...poem,
+      categories: poemCategories.rows
+        .filter(poemCategory => poemCategory.poem_id === poem.id)
+        .map(poemCategory => ({ id: poemCategory.id, name: poemCategory.name }))
+    }));
+
+    res.status(200).json(poemsWithCategories);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 module.exports = {
   createPoem,
   deletePoem,
@@ -322,5 +377,6 @@ module.exports = {
   getAllPoems,
   getPoemById,
   getUserPoems,
-  getPoemsByCategory
+  getPoemsByCategory,
+  getPopularPoems
 };

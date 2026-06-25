@@ -7,17 +7,19 @@ const {
   getAllPoems,
   getPoemById,
   getUserPoems,
-  getPoemsByCategory
+  getPoemsByCategory,
+  getPopularPoems
 } = require("../controllers/poem.controller");
 const auth = require("../middleware/auth");
 
 router.post("/", auth, createPoem);
-router.delete("/:id", auth, deletePoem);
-router.put("/:id", auth, editPoem)
+router.get("/popular", getPopularPoems);
 router.get("/", getAllPoems);
-router.get("/:id", getPoemById);
 router.get("/user/:userId", getUserPoems);
 router.get("/category/:categoryId", getPoemsByCategory);
+router.get("/:id", getPoemById);
+router.delete("/:id", auth, deletePoem);
+router.put("/:id", auth, editPoem);
 
 
 module.exports = router;

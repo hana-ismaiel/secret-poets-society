@@ -32,9 +32,23 @@ export function usePoems() {
   }
 
   async function getPoemsByCategory(categoryId) {
-  const response = await api.get(`/poems/category/${categoryId}`)
-  return response.data
-}
+    const response = await api.get(`/poems/category/${categoryId}`)
+    return response.data
+  }
 
-  return { getAllPoems, getPoemById, getUserPoems, createPoem, editPoem, deletePoem, getPoemsByCategory}
+  async function getPopularPoems(timeframe = "all") {
+    const response = await api.get(`/poems/popular?timeframe=${timeframe}`);
+    return response.data;
+  }
+
+  return {
+    getAllPoems,
+    getPoemById,
+    getUserPoems,
+    createPoem,
+    editPoem,
+    deletePoem,
+    getPoemsByCategory,
+    getPopularPoems
+  }
 }
