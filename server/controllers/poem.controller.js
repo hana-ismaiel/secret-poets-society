@@ -1,6 +1,6 @@
 const pool = require("../db");
 
-const POEMS_PER_PAGE = 20;
+const POEMS_PER_PAGE = 10;
 
 const createPoem = async (req, res) => {
   const { title, content, categoryIds } = req.body;

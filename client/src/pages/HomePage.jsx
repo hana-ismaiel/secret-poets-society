@@ -4,7 +4,7 @@ import { usePoems } from "@/hooks/usePoems"
 import Pagination from "@/components/Pagination"
 
 function HomePage() {
-  const { getAllPoems, POEMS_PER_PAGE } = usePoems()
+  const { getAllPoems } = usePoems()
   const [poems, setPoems] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
@@ -15,7 +15,7 @@ function HomePage() {
     async function fetchPoems() {
       setLoading(true)
       try {
-        const data = await getAllPoems(currentPage, POEMS_PER_PAGE)
+        const data = await getAllPoems(currentPage)
         setPoems(data.poems)
         setTotalPages(data.pagination.totalPages)
       } catch (err) {
