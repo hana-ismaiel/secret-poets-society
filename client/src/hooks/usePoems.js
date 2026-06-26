@@ -15,13 +15,13 @@ export function usePoems() {
   }
 
   async function getUserPoems(userId, page = 1, limit) {
-  const url = limit 
-    ? `/poems/user/${userId}?page=${page}&limit=${limit}` 
-    : `/poems/user/${userId}?page=${page}`;
-    
-  const response = await api.get(url)
-  return response.data
-}
+    const url = limit 
+      ? `/poems/user/${userId}?page=${page}&limit=${limit}` 
+      : `/poems/user/${userId}?page=${page}`;
+      
+    const response = await api.get(url)
+    return response.data
+  }
 
   async function createPoem(poemData) {
     const response = await api.post("/poems", poemData)
@@ -38,8 +38,12 @@ export function usePoems() {
     return response.data
   }
 
-  async function getPoemsByCategory(categoryId) {
-    const response = await api.get(`/poems/category/${categoryId}`)
+  async function getPoemsByCategory(categoryId, page = 1, limit) {
+    const url = limit 
+      ? `/poems/category/${categoryId}?page=${page}&limit=${limit}` 
+      : `/poems/category/${categoryId}?page=${page}`;
+      
+    const response = await api.get(url)
     return response.data
   }
 

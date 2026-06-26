@@ -1,5 +1,6 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import PoemCard from "@/components/PoemCard"
+import Pagination from "@/components/Pagination"
 import { useCategories } from "@/hooks/useCategories"
 import { usePoems } from "@/hooks/usePoems"
 
@@ -9,22 +10,36 @@ function ThemesPage() {
 
   const [selectedCategory, setSelectedCategory] = useState(null)
   const [poems, setPoems] = useState([])
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
   const [poemsLoading, setPoemsLoading] = useState(false)
   const [error, setError] = useState(null)
 
-  async function handleSelectCategory(category) {
-    setSelectedCategory(category)
-    setPoemsLoading(true)
-    setError(null)
-
-    try {
-      const data = await getPoemsByCategory(category.id)
-      setPoems(data.poems)
-    } catch (err) {
-      setError(err.response?.data?.message || "Something went wrong")
-    } finally {
-      setPoemsLoading(false)
+  useEffect(() => {
+    if (!selectedCategory) return
+    async function fetchThemePoems() {
+      setPoemsLoading(true)
+      setError(null)
+      try {
+        const data = await getPoemsByCategory(selectedCategory.id, currentPage)
+        setPoems(data.poems)
+          setTotalPages(data.pagination.totalPages)
+      } catch (err) {
+        setError(err.response?.data?.message || "Something went wrong")
+          setPoems([])
+      } finally {
+        setPoemsLoading(false)
+      }
     }
+    fetchThemePoems()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCategory, currentPage])
+
+  function handleSelectCategory(category) {
+    setPoems([])
+    setCurrentPage(1) // Reset back to page 1
+    setTotalPages(1) // Clear page count
+    setSelectedCategory(category)
   }
 
   return (
@@ -72,6 +87,11 @@ function ThemesPage() {
           ) : (
             poems.map((poem) => <PoemCard key={poem.id} poem={poem} />)
           )}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
         </div>
       )}
     </div>

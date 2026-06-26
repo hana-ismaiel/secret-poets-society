@@ -1,6 +1,6 @@
 const pool = require("../db");
 
-const POEMS_PER_PAGE = 10;
+const POEMS_PER_PAGE = 1;
 
 const createPoem = async (req, res) => {
   const { title, content, categoryIds } = req.body;
@@ -314,6 +314,9 @@ const getUserPoems = async (req, res) => {
 
 const getPoemsByCategory = async (req, res) => {
   const { categoryId } = req.params;
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || POEMS_PER_PAGE;
+  const offset = (page - 1) * limit;
 
   try {
     const category = await pool.query(
@@ -324,6 +327,13 @@ const getPoemsByCategory = async (req, res) => {
     if (category.rows.length === 0) {
       return res.status(404).json({ message: "Category not found" });
     }
+
+    const countResult = await pool.query(
+      "SELECT COUNT(*) FROM poem_categories WHERE category_id = $1",
+      [categoryId]
+    );
+    const totalPoems = parseInt(countResult.rows[0].count);
+    const totalPages = Math.ceil(totalPoems / limit);
 
     // Find the poems that are tagged with the chosen category
     const poems = await pool.query(
@@ -338,20 +348,27 @@ const getPoemsByCategory = async (req, res) => {
       JOIN users ON poems.user_id = users.id
       JOIN poem_categories ON poems.id = poem_categories.poem_id
       WHERE poem_categories.category_id = $1
-      ORDER BY poems.created_at DESC`,
-      [categoryId]
+      ORDER BY poems.created_at DESC
+      LIMIT $2 OFFSET $3`,
+      [categoryId, limit, offset]
     );
 
-    const poemCategories = await pool.query(
-      `SELECT 
-        poem_categories.poem_id,
-        categories.id,
-        categories.name
-      FROM poem_categories
-      JOIN categories ON poem_categories.category_id = categories.id`
-    );
+    const poemIds = poems.rows.map(poem => poem.id);
+    let poemCategories = { rows: [] };
+    
+    if (poemIds.length > 0) {
+      poemCategories = await pool.query(
+        `SELECT 
+          poem_categories.poem_id,
+          categories.id,
+          categories.name
+        FROM poem_categories
+        JOIN categories ON poem_categories.category_id = categories.id
+        WHERE poem_categories.poem_id = ANY($1)`,
+        [poemIds]
+      );
+    }
 
-    // Append categories to each poem
     const poemsWithCategories = poems.rows.map(poem => ({
       ...poem,
       categories: poemCategories.rows
@@ -359,7 +376,16 @@ const getPoemsByCategory = async (req, res) => {
         .map(poemCategory => ({ id: poemCategory.id, name: poemCategory.name }))
     }));
 
-    res.status(200).json({ category: category.rows[0], poems: poemsWithCategories });
+    res.status(200).json({
+      category: category.rows[0],
+      poems: poemsWithCategories,
+      pagination: {
+        totalPoems,
+        totalPages,
+        currentPage: page,
+        limit
+      }
+    });
 
   } catch (error) {
     console.error(error);
