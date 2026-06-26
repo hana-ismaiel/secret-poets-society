@@ -235,6 +235,9 @@ const getPoemById = async (req, res) => {
 // Get a specific user's poems
 const getUserPoems = async (req, res) => {
   const { userId } = req.params;
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || POEMS_PER_PAGE;
+  const offset = (page - 1) * limit;
 
   try {
     const userExists = await pool.query(
@@ -245,6 +248,13 @@ const getUserPoems = async (req, res) => {
     if (userExists.rows.length === 0) {
       return res.status(404).json({ message: "User not found" });
     }
+
+    const countResult = await pool.query(
+      "SELECT COUNT(*) FROM poems WHERE user_id = $1",
+      [userId]
+    );
+    const totalPoems = parseInt(countResult.rows[0].count);
+    const totalPages = Math.ceil(totalPoems / limit);
 
     const poems = await pool.query(
       `SELECT 
@@ -258,20 +268,27 @@ const getUserPoems = async (req, res) => {
       FROM poems
       JOIN users ON poems.user_id = users.id
       WHERE poems.user_id = $1
-      ORDER BY poems.created_at DESC`,
-      [userId]
+      ORDER BY poems.created_at DESC
+      LIMIT $2 OFFSET $3`,
+      [userId, limit, offset]
     );
 
-    const poemCategories = await pool.query(
-      `SELECT 
-        poem_categories.poem_id,
-        categories.id,
-        categories.name
-      FROM poem_categories
-      JOIN categories ON poem_categories.category_id = categories.id`
-    );
+    const poemIds = poems.rows.map(poem => poem.id);
+    let poemCategories = { rows: [] };
+    
+    if (poemIds.length > 0) {
+      poemCategories = await pool.query(
+        `SELECT 
+          poem_categories.poem_id,
+          categories.id,
+          categories.name
+        FROM poem_categories
+        JOIN categories ON poem_categories.category_id = categories.id
+        WHERE poem_categories.poem_id = ANY($1)`,
+        [poemIds]
+      );
+    }
 
-    // Append categories to each poem
     const poemsWithCategories = poems.rows.map(poem => ({
       ...poem,
       categories: poemCategories.rows
@@ -279,7 +296,15 @@ const getUserPoems = async (req, res) => {
         .map(poemCategory => ({ id: poemCategory.id, name: poemCategory.name }))
     }));
 
-    res.status(200).json(poemsWithCategories);
+    res.status(200).json({
+      poems: poemsWithCategories,
+      pagination: {
+        totalPoems,
+        totalPages,
+        currentPage: page,
+        limit
+      }
+    });
 
   } catch (error) {
     console.error(error);
