@@ -28,14 +28,14 @@ function PoemsTabPanel({ userId, mode }) {
           setTotalPages(data.pagination.totalPages)
         }
         if (mode === "saved") {
-          data = await getUserSaves()
-          setPoems(data)
-          setTotalPages(1)
+          data = await getUserSaves(currentPage)
+          setPoems(data.poems)
+          setTotalPages(data.pagination.totalPages)
         }
         if (mode === "liked") {
-          data = await getUserLikes()
-          setPoems(data)
-          setTotalPages(1)
+          data = await getUserLikes(currentPage)
+          setPoems(data.poems)
+          setTotalPages(data.pagination.totalPages)
         }
 
         // setPoems(data.poems)
@@ -59,13 +59,11 @@ function PoemsTabPanel({ userId, mode }) {
     <div className="flex flex-col gap-8">
       {poems.map((poem) => <PoemCard key={poem.id} poem={poem} />)}
 
-      {mode === "poems" && (
-        <Pagination
+      <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
           onPageChange={setCurrentPage}
         />
-      )}
     </div>
   )
 }

@@ -11,8 +11,9 @@ export function useSaves() {
     return response.data
   }
 
-  async function getUserSaves() {
-    const response = await api.get(`/saved/my-saved`)
+  async function getUserSaves(page = 1, limit) {
+    const url = limit ? `/saved/my-saved?page=${page}&limit=${limit}` : `/saved/my-saved?page=${page}`;
+    const response = await api.get(url)
     return response.data
   }
 
