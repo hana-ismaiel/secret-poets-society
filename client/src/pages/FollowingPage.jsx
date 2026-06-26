@@ -4,11 +4,11 @@ import PoemCard from "@/components/PoemCard"
 import Pagination from "@/components/Pagination"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/hooks/useAuth"
-import { useFollows } from "@/hooks/useFollows"
+import { usePoems } from "@/hooks/usePoems"
 
 function FollowingPage() {
   const { user } = useAuth()
-  const { getFollowingFeed } = useFollows()
+  const { getFollowingFeed } = usePoems()
   const [poems, setPoems] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)

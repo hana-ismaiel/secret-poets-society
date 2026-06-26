@@ -1,7 +1,5 @@
 const pool = require("../db");
 
-const POEMS_PER_PAGE = 1;
-
 const toggleFollow = async (req, res) => {
   const { followingId } = req.params; // the person being followed/unfollowed
   const followerId = req.user.id; // the person doing the following
@@ -101,79 +99,6 @@ const getFollowingCount = async (req, res) => {
   }
 };
 
-// Get posts by users that you follow
-const getFollowingFeed = async (req, res) => {
-  const followerId = req.user.id;
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || POEMS_PER_PAGE;
-  const offset = (page - 1) * limit;
-
-  try {
-    const countResult = await pool.query(
-      `SELECT COUNT(DISTINCT poems.id) FROM poems
-      JOIN follows ON poems.user_id = follows.following_id
-      WHERE follows.follower_id = $1`,
-      [followerId]
-    );
-    const totalPoems = parseInt(countResult.rows[0].count);
-    const totalPages = Math.ceil(totalPoems / limit);
-
-    const poems = await pool.query(
-      `SELECT 
-        poems.id,
-        poems.title,
-        poems.content,
-        poems.created_at,
-        poems.user_id AS author_id,
-        users.username AS author
-      FROM poems
-      JOIN users ON poems.user_id = users.id
-      JOIN follows ON follows.following_id = poems.user_id
-      WHERE follows.follower_id = $1
-      ORDER BY poems.created_at DESC
-      LIMIT $2 OFFSET $3`,
-      [followerId, limit, offset]
-    );
-
-    const poemIds = poems.rows.map(poem => poem.id);
-    let poemCategories = { rows: [] };
-    
-    if (poemIds.length > 0) {
-      poemCategories = await pool.query(
-        `SELECT 
-          poem_categories.poem_id,
-          categories.id,
-          categories.name
-        FROM poem_categories
-        JOIN categories ON poem_categories.category_id = categories.id
-        WHERE poem_categories.poem_id = ANY($1)`,
-        [poemIds]
-      );
-    }
-
-    const poemsWithCategories = poems.rows.map(poem => ({
-      ...poem,
-      categories: poemCategories.rows
-        .filter(poemCategory => poemCategory.poem_id === poem.id)
-        .map(poemCategory => ({ id: poemCategory.id, name: poemCategory.name }))
-    }));
-
-    res.status(200).json({
-      poems: poemsWithCategories,
-      pagination: {
-        totalPoems,
-        totalPages,
-        currentPage: page,
-        limit
-      }
-    });
-
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
 const getFollowers = async (req, res) => {
   const { userId } = req.params;
 
@@ -222,7 +147,6 @@ module.exports = {
   checkIsFollowing,
   getFollowerCount,
   getFollowingCount,
-  getFollowingFeed,
   getFollowers,
   getFollowing,
 };

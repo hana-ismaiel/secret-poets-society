@@ -2,14 +2,10 @@ import { useState, useEffect } from "react"
 import PoemCard from "@/components/PoemCard"
 import Pagination from "@/components/Pagination"
 import { usePoems } from "@/hooks/usePoems"
-import { useSaves } from "@/hooks/useSaves"
-import { useLikes } from "@/hooks/useLikes"
 
 function PoemsTabPanel({ userId, mode }) {
   // mode is "poems" | "saved" | "liked"
-  const { getUserPoems } = usePoems()
-  const { getUserSaves } = useSaves()
-  const { getUserLikes } = useLikes()
+  const { getUserPoems, getUserLikes, getUserSaves } = usePoems()
 
   const [poems, setPoems] = useState([])
   const [currentPage, setCurrentPage] = useState(1)

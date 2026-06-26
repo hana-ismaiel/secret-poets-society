@@ -16,11 +16,5 @@ export function useLikes() {
     return response.data
   }
 
-  async function getUserLikes(page = 1, limit) {
-    const url = limit ? `/likes/my-likes?page=${page}&limit=${limit}` : `/likes/my-likes?page=${page}`;
-    const response = await api.get(url)
-    return response.data
-  }
-
-  return { toggleLike, getLikeCount, checkUserLiked, getUserLikes }
+  return { toggleLike, getLikeCount, checkUserLiked }
 }

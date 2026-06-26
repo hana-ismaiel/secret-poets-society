@@ -21,12 +21,6 @@ export function useFollows() {
     return response.data
   }
 
-  async function getFollowingFeed(page = 1, limit) {
-    const url = limit ? `/follows/feed?page=${page}&limit=${limit}` : `/follows/feed?page=${page}`;
-    const response = await api.get(url)
-    return response.data
-  }
-
   async function getFollowers(userId) {
   const response = await api.get(`/follows/${userId}/followers`)
   return response.data
@@ -42,7 +36,6 @@ async function getFollowing(userId) {
     checkIsFollowing,
     getFollowerCount,
     getFollowingCount,
-    getFollowingFeed,
     getFollowers,
     getFollowing,
   }

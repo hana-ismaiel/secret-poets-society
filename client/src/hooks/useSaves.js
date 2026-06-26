@@ -11,11 +11,5 @@ export function useSaves() {
     return response.data
   }
 
-  async function getUserSaves(page = 1, limit) {
-    const url = limit ? `/saved/my-saved?page=${page}&limit=${limit}` : `/saved/my-saved?page=${page}`;
-    const response = await api.get(url)
-    return response.data
-  }
-
-  return { toggleSaved, checkUserSaved, getUserSaves }
+  return { toggleSaved, checkUserSaved }
 }

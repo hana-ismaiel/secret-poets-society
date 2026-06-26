@@ -56,6 +56,24 @@ export function usePoems() {
     return response.data
   }
 
+  async function getFollowingFeed(page = 1, limit) {
+    const url = limit ? `/poems/following?page=${page}&limit=${limit}` : `/poems/following?page=${page}`;
+    const response = await api.get(url)
+    return response.data
+  }
+
+  async function getUserLikes(page = 1, limit) {
+    const url = limit ? `/poems/likes?page=${page}&limit=${limit}` : `/poems/likes?page=${page}`;
+    const response = await api.get(url)
+    return response.data
+  }
+
+  async function getUserSaves(page = 1, limit) {
+    const url = limit ? `/poems/saves?page=${page}&limit=${limit}` : `/poems/saves?page=${page}`;
+    const response = await api.get(url)
+    return response.data
+  }
+
   return {
     getAllPoems,
     getPoemById,
@@ -64,6 +82,9 @@ export function usePoems() {
     editPoem,
     deletePoem,
     getPoemsByCategory,
-    getPopularPoems
+    getPopularPoems,
+    getFollowingFeed,
+    getUserLikes,
+    getUserSaves
   }
 }
