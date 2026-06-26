@@ -394,7 +394,10 @@ const getPoemsByCategory = async (req, res) => {
 };
 
 const getPopularPoems = async (req, res) => {
-  const { timeframe } = req.query; // "24h", "7d", or "all"
+  const timeframe = req.query.timeframe; // "24h", "7d", or "all"
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || POEMS_PER_PAGE;
+  const offset = (page - 1) * limit;
 
   let timeCondition = "";
 
@@ -406,6 +409,13 @@ const getPopularPoems = async (req, res) => {
   }
 
   try {
+    const countResult = await pool.query(
+      `SELECT COUNT(DISTINCT poems.id) FROM poems
+       LEFT JOIN likes ON poems.id = likes.poem_id
+       ${timeCondition}`
+    );
+    const totalPoems = parseInt(countResult.rows[0].count);
+    const totalPages = Math.ceil(totalPoems / limit);
     const popularPoems = await pool.query(
       `SELECT 
         poems.id,
@@ -420,19 +430,27 @@ const getPopularPoems = async (req, res) => {
       LEFT JOIN likes ON poems.id = likes.poem_id
       ${timeCondition}
       GROUP BY poems.id, users.username
-      ORDER BY like_count DESC, poems.created_at DESC`
+      ORDER BY like_count DESC, poems.created_at DESC
+      LIMIT $1 OFFSET $2`,
+      [limit, offset]
     );
 
-    const poemCategories = await pool.query(
-      `SELECT 
-        poem_categories.poem_id,
-        categories.id,
-        categories.name
-      FROM poem_categories
-      JOIN categories ON poem_categories.category_id = categories.id`
-    );
+    const poemIds = popularPoems.rows.map(poem => poem.id);
+    let poemCategories = { rows: [] };
+    
+    if (poemIds.length > 0) {
+      poemCategories = await pool.query(
+        `SELECT 
+          poem_categories.poem_id,
+          categories.id,
+          categories.name
+        FROM poem_categories
+        JOIN categories ON poem_categories.category_id = categories.id
+        WHERE poem_categories.poem_id = ANY($1)`,
+        [poemIds]
+      );
+    }
 
-    // Append categories to each poem
     const poemsWithCategories = popularPoems.rows.map(poem => ({
       ...poem,
       categories: poemCategories.rows
@@ -440,7 +458,15 @@ const getPopularPoems = async (req, res) => {
         .map(poemCategory => ({ id: poemCategory.id, name: poemCategory.name }))
     }));
 
-    res.status(200).json(poemsWithCategories);
+    res.status(200).json({
+      poems: poemsWithCategories,
+      pagination: {
+        totalPoems,
+        totalPages,
+        currentPage: page,
+        limit
+      }
+    });
 
   } catch (error) {
     console.error(error);

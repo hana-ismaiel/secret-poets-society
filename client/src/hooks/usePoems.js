@@ -47,9 +47,13 @@ export function usePoems() {
     return response.data
   }
 
-  async function getPopularPoems(timeframe = "all") {
-    const response = await api.get(`/poems/popular?timeframe=${timeframe}`);
-    return response.data;
+  async function getPopularPoems(timeframe = "all", page = 1, limit) {
+    const url = limit 
+      ? `/poems/popular/?timeframe=${timeframe}&page=${page}&limit=${limit}` 
+      : `/poems/popular/?timeframe=${timeframe}&page=${page}` ;
+      
+    const response = await api.get(url)
+    return response.data
   }
 
   return {

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import PoemCard from "@/components/PoemCard"
+import Pagination from "@/components/Pagination"
 import { usePoems } from "@/hooks/usePoems"
 import { Button } from "@/components/ui/button"
 import { Flame } from "lucide-react"
@@ -8,6 +9,8 @@ function PopularPage() {
   const { getPopularPoems } = usePoems()
   const [poems, setPoems] = useState([])
   const [timeframe, setTimeframe] = useState("all") // "all", "24h", "7d"
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -16,8 +19,9 @@ function PopularPage() {
       setLoading(true)
       setError(null)
       try {
-        const data = await getPopularPoems(timeframe)
-        setPoems(data)
+        const data = await getPopularPoems(timeframe, currentPage)
+        setPoems(data.poems)
+        setTotalPages(data.pagination.totalPages)
       } catch (err) {
         setError(err.response?.data?.message || "Something went wrong")
       } finally {
@@ -27,7 +31,14 @@ function PopularPage() {
 
     fetchTrending()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timeframe])
+  }, [timeframe, currentPage])
+
+  function handleTimeframeChange(newTimeframe) {
+    setPoems([])
+    setCurrentPage(1) // Reset to first page
+    setTotalPages(1) // Clear total pages count
+    setTimeframe(newTimeframe)
+  }
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
@@ -39,21 +50,21 @@ function PopularPage() {
       <div className="flex gap-2 border-b pb-4 mb-8">
         <Button
           variant={timeframe === "all" ? "default" : "outline"}
-          onClick={() => setTimeframe("all")}
+          onClick={() => handleTimeframeChange("all")}
           className="rounded-none text-xs h-9"
         >
           All Time
         </Button>
         <Button
           variant={timeframe === "24h" ? "default" : "outline"}
-          onClick={() => setTimeframe("24h")}
+          onClick={() => handleTimeframeChange("24h")}
           className="rounded-none text-xs h-9"
         >
           Past 24 Hours
         </Button>
         <Button
           variant={timeframe === "7d" ? "default" : "outline"}
-          onClick={() => setTimeframe("7d")}
+          onClick={() => handleTimeframeChange("7d")}
           className="rounded-none text-xs h-9"
         >
           Past 7 Days
@@ -71,6 +82,11 @@ function PopularPage() {
           {poems.map((poem) => (
             <PoemCard key={poem.id} poem={poem} />
           ))}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
         </div>
       )}
     </div>
