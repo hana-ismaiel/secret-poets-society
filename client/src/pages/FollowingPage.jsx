@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import PoemCard from "@/components/PoemCard"
+import Pagination from "@/components/Pagination"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/hooks/useAuth"
 import { useFollows } from "@/hooks/useFollows"
@@ -9,6 +10,8 @@ function FollowingPage() {
   const { user } = useAuth()
   const { getFollowingFeed } = useFollows()
   const [poems, setPoems] = useState([])
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -18,9 +21,12 @@ function FollowingPage() {
     }
 
     async function fetchFeed() {
+      setLoading(true)
+      setError(null)
       try {
-        const data = await getFollowingFeed()
-        setPoems(data)
+        const data = await getFollowingFeed(currentPage)
+        setPoems(data.poems)
+        setTotalPages(data.pagination.totalPages)
       } catch (err) {
         setError(err.response?.data?.message || "Something went wrong")
       } finally {
@@ -30,7 +36,7 @@ function FollowingPage() {
 
     fetchFeed()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user])
+  }, [user, currentPage])
 
   if (!user) {
     return (
@@ -57,7 +63,17 @@ function FollowingPage() {
           No poems yet from people you follow. Try following some poets!
         </p>
       ) : (
-        poems.map((poem) => <PoemCard key={poem.id} poem={poem} />)
+        <div className="flex flex-col gap-8">
+          {poems.map((poem) => (
+            <PoemCard key={poem.id} poem={poem} />
+          ))}
+
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        </div>
       )}
     </div>
   )
