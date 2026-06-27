@@ -13,7 +13,7 @@ function UserListItem({ user }) {
           
         </AvatarFallback>
       </Avatar>
-      <span className="font-medium">{user.username}</span>
+      <span className="font-text font-medium">{user.username}</span>
     </Link>
   )
 }

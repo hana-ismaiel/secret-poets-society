@@ -62,7 +62,7 @@ function UserPage() {
   return (
     <div className="max-w-5xl mx-auto px-4 py-8 flex flex-col md:flex-row gap-8">
       <div className="flex-1 flex flex-col gap-8">
-        <h2 className="text-xl font-bold border-b pb-2">{tabTitles[activeTab]}</h2>
+        <h2 className="font-text text-xl font-bold border-b pb-2">{tabTitles[activeTab]}</h2>
 
         {(activeTab === "poems" || activeTab === "saved" || activeTab === "liked") && (
           <PoemsTabPanel

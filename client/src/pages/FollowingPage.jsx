@@ -45,7 +45,7 @@ function FollowingPage() {
 
   if (!user) {
     return (
-      <div className="max-w-2xl mx-auto px-4 py-12 text-center">
+      <div className="font-text max-w-2xl mx-auto px-4 py-12 text-center">
         <p className="text-muted-foreground mb-4">
           Sign in to see poems from people you follow
         </p>
@@ -57,14 +57,14 @@ function FollowingPage() {
   }
 
   if (loading) return <LoadingSpinner />
-  if (error) return <p className="text-center mt-10 text-red-500">{error}</p>
+  if (error) return <p className="font-text text-center mt-10 text-red-500">{error}</p>
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8 flex flex-col gap-8">
-      <h1 className="text-2xl font-bold">Following</h1>
+      <h1 className="font-text text-2xl font-bold">Following</h1>
 
       {poems.length === 0 ? (
-        <p className="text-center text-muted-foreground mt-10">
+        <p className="font-text font-text text-center text-muted-foreground mt-10">
           No poems yet from people you follow. Try following some poets!
         </p>
       ) : (

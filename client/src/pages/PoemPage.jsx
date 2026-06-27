@@ -28,7 +28,7 @@ function PoemPage() {
   }, [id, getPoemById])
 
   if (loading) return <LoadingSpinner />
-  if (error) return <p className="text-center mt-10 text-red-500">{error}</p>
+  if (error) return <p className="font-text text-center mt-10 text-red-500">{error}</p>
 
   return (
     <div>

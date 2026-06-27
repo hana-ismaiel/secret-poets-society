@@ -71,23 +71,29 @@ function ThemeDetailPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-8">Explore Themes</h1>
+      <h1 className="font-text text-2xl font-bold mb-8">Explore Themes</h1>
 
       <div className="flex flex-col gap-8">
-        <h2 className="text-xl font-semibold border-b pb-2">{theme.name}</h2>
+        <h2 className="font-text text-xl font-semibold border-b pb-2">{theme.name}</h2>
 
         {poemsLoading ? (
           <LoadingSpinner />
         ) : error ? (
-          <p className="text-center text-red-500 mt-6">{error}</p>
+          <p className="font-text text-center text-red-500 mt-6">{error}</p>
         ) : poems.length === 0 ? (
-          <p className="text-center text-muted-foreground mt-6">
+          <p className="font-text text-center text-muted-foreground mt-6">
             No poems created in this theme yet
           </p>
         ) : (
-          poems.map((poem) => (
-            <PoemCard key={poem.id} poem={poem} onDeleteSuccess={handlePoemDeleted} />
-          ))
+          <div className="max-w-2xl mx-auto w-full flex flex-col gap-8">
+            {poems.map((poem) => (
+              <PoemCard 
+                key={poem.id} 
+                poem={poem} 
+                onDeleteSuccess={handlePoemDeleted} 
+              />
+            ))}
+          </div>
         )}
 
         <Pagination

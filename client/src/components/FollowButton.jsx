@@ -37,7 +37,7 @@ function FollowButton({ userId }) {
   return (
     <Button
       variant={isFollowing ? "outline" : "default"}
-      className="w-full"
+      className="font-text w-full"
       onClick={handleClick}
     >
       {isFollowing ? "Following" : "Follow"}

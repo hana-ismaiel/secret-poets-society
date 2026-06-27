@@ -26,7 +26,7 @@ function Sidebar() {
       {user && (
         <div className="flex flex-col gap-4">
           <Link to="/poems/create" className="gap-4">
-            <Button className="w-full gap-2">
+            <Button className="font-text w-full gap-2">
               <PenSquare size={16} />
               Create Poem
             </Button>
@@ -45,7 +45,7 @@ function Sidebar() {
             <Link
               key={path}
               to={path}
-              className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm ${
+              className={`font-text flex items-center gap-2 px-3 py-2 rounded-md text-sm ${
                 isActive ? "bg-muted font-medium" : "hover:bg-muted text-muted-foreground"
               }`}
             >

@@ -7,7 +7,7 @@ function ThemesPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-8">Explore Themes</h1>
+      <h1 className="font-text text-2xl font-bold mb-8">Explore Themes</h1>
 
       {themesLoading ? (
         <LoadingSpinner />

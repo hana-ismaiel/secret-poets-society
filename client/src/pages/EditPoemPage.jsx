@@ -81,13 +81,14 @@ function EditPoemPage() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-12">
-      <h1 className="text-2xl font-bold mb-6">Edit Your Poem</h1>
+      <h1 className="font-text text-2xl font-bold mb-6">Edit Your Poem</h1>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <Input
           placeholder="Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          className="font-text"
         />
 
         <Textarea
@@ -95,10 +96,11 @@ function EditPoemPage() {
           value={content}
           onChange={(e) => setContent(e.target.value)}
           rows={12}
+          className="font-text"
         />
 
         <div>
-          <p className="text-sm font-medium mb-2">
+          <p className="font-text font-bold text-sm mb-2">
             Themes (up to {MAX_THEMES})
           </p>
 
@@ -128,9 +130,9 @@ function EditPoemPage() {
           )}
         </div>
 
-        {error && <p className="text-sm text-red-500">{error}</p>}
+        {error && <p className="font-text text-sm text-red-500">{error}</p>}
 
-        <div className="flex gap-3">
+        <div className="font-text flex gap-3">
           <Button type="submit" disabled={submitting}>
             {submitting ? "Saving Changes..." : "Save Changes"}
           </Button>

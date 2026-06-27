@@ -49,8 +49,8 @@ function PoemsTabPanel({ userId, mode }) {
   }, [userId, mode, currentPage])
 
   if (loading) return <LoadingSpinner />
-  if (error) return <p className="text-center text-red-500 mt-10">{error}</p>
-  if (poems.length === 0) return <p className="text-center text-muted-foreground mt-10">No poems found.</p>
+  if (error) return <p className="font-text text-center text-red-500 mt-10">{error}</p>
+  if (poems.length === 0) return <p className="font-text text-center text-muted-foreground mt-10">No poems found.</p>
 
   return (
     <div className="flex flex-col gap-8">

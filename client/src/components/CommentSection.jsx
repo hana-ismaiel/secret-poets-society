@@ -36,16 +36,16 @@ function CommentSection({ poemId }) {
 
   return (
     <div className="max-w-2xl mx-auto px-4 mt-10">
-      <h2 className="text-lg font-semibold mb-4">Comments</h2>
+      <h2 className="font-text text-lg font-semibold mb-4">Comments</h2>
 
       <CommentForm poemId={poemId} onCommentCreated={handleCommentCreated} />
 
       {loading && <LoadingSpinner />}
-      {error && <p className="text-center mt-6 text-red-500">{error}</p>}
+      {error && <p className="font-text text-center mt-6 text-red-500">{error}</p>}
 
       {!loading && !error && (
         comments.length === 0 ? (
-          <p className="text-muted-foreground text-sm">No comments yet</p>
+          <p className="font-text text-muted-foreground text-sm">No comments yet</p>
         ) : (
           <div className="flex flex-col gap-4">
             {comments.map((comment) => (

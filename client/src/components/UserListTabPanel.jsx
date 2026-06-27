@@ -33,8 +33,8 @@ function UserListTabPanel({ userId, mode }) {
   }, [userId, mode])
 
   if (loading) return <LoadingSpinner />
-  if (error) return <p className="text-center text-red-500 mt-10">{error}</p>
-  if (users.length === 0) return <p className="text-center text-muted-foreground mt-10">No users found.</p>
+  if (error) return <p className="font-text text-center text-red-500 mt-10">{error}</p>
+  if (users.length === 0) return <p className="font-text text-center text-muted-foreground mt-10">No users found.</p>
 
   return (
     <div className="flex flex-col">

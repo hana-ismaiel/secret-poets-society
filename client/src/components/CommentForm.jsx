@@ -25,7 +25,7 @@ function CommentForm({ poemId, onCommentCreated }) {
   }
 
   return (
-    <div className="mb-6">
+    <div className="font-text mb-6">
       <Textarea
         placeholder="What are your thoughts?"
         value={content}
@@ -34,7 +34,7 @@ function CommentForm({ poemId, onCommentCreated }) {
       />
 
       {isWriting && (
-        <div className="flex gap-2 mt-2 justify-end">
+        <div className="font-text flex gap-2 mt-2 justify-end">
           <Button variant="outline" onClick={handleCancel}>
             Cancel
           </Button>

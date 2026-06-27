@@ -25,10 +25,10 @@ function LoginPage() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen px-4">
+    <div className="font-text flex items-center justify-center min-h-screen px-4">
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle className="text-2xl text-center">Sign In</CardTitle>
+          <CardTitle className="font-text text-2xl text-center">Sign In</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -49,7 +49,7 @@ function LoginPage() {
           </form>
 
           <p className="text-sm text-center mt-4">
-            Don"t have an account?{" "}
+            Don't have an account?{" "}
             <Link to="/register" className="underline">
               Sign up
             </Link>

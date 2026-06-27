@@ -13,19 +13,19 @@ function Poem({ poem }) {
       <div className="absolute top-12 right-4">
         <PoemActions poem={poem} />
       </div>
-      <h1 className="text-3xl font-bold mb-2">{poem.title}</h1>
+      <h1 className="font-text text-3xl font-bold mb-2">{poem.title}</h1>
 
       <p className="text-lg mb-8">
         by{" "}
         <Link
           to={`/users/${poem.author_id}`}
-          className="text-primary hover:underline font-medium"
+          className="font-text-italic text-primary hover:underline font-medium"
         >
           {poem.author}
         </Link>
       </p>
 
-      <p className="whitespace-pre-line text-lg leading-relaxed">
+      <p className="font-text whitespace-pre-line text-lg leading-relaxed">
         {poem.content}
       </p>
 

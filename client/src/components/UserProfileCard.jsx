@@ -11,7 +11,7 @@ function UserProfileCard({ user }) {
   })
 
   return (
-    <Card className="rounded-none">
+    <Card className="font-text rounded-none">
       <CardContent className="flex flex-col items-center text-center pt-6">
         <Avatar className="w-20 h-20 mb-4">
           <AvatarFallback className="text-xl">

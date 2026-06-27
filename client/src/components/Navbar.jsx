@@ -14,7 +14,7 @@ function Navbar() {
 
   return (
     <nav className="flex items-center justify-between px-6 py-4 border-b gap-4">
-      <Link to="/" className="text-xl font-semibold">
+      <Link to="/" className="font-title text-2xl font-semibold">
         Secret Poets Society
       </Link>
 
@@ -22,10 +22,10 @@ function Navbar() {
         <Input type="text" placeholder="Search poems..." />
       </div>
 
-      <div>
+      <div className="font-text">
         {user ? (
           <div className="flex items-center gap-2">
-            <Link to={`/users/${user.id}`}>{user.username}</Link>
+            <Link to={`/users/${user.id}`} className="font-bold">{user.username}</Link>
             <Button variant="outline" onClick={logout}>Sign Out</Button>
           </div>
         ) : (

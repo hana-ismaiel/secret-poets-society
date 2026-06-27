@@ -35,12 +35,12 @@ function HomePage() {
   }
 
   if (loading) return <LoadingSpinner />
-  if (error) return <p className="text-center mt-10 text-red-500">{error}</p>
+  if (error) return <p className="font-text text-center mt-10 text-red-500">{error}</p>
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8 flex flex-col gap-8">
       {poems.length === 0 ? (
-        <p className="text-center text-muted-foreground mt-10">No poems found.</p>
+        <p className="font-text text-center text-muted-foreground mt-10">No poems found.</p>
       ) : (
         <div className="flex flex-col gap-8">
           {poems.map((poem) => (

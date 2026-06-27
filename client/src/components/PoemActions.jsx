@@ -57,7 +57,7 @@ function PoemActions({ poem, onDeleteSuccess }) {
         <DropdownMenuContent align="end" className="w-36">
           <DropdownMenuItem onClick={() => navigate(`/poems/edit/${poem.id}`)}>
             <Edit2 className="mr-2 h-4 w-4" />
-            <span>Edit</span>
+            <span className="font-text">Edit</span>
           </DropdownMenuItem>
           
           <DropdownMenuItem 
@@ -68,14 +68,14 @@ function PoemActions({ poem, onDeleteSuccess }) {
             className="text-destructive focus:text-destructive"
           >
             <Trash2 className="mr-2 h-4 w-4" />
-            <span>Delete</span>
+            <span className="font-text">Delete</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <AlertDialogContent className="rounded-none">
+      <AlertDialogContent className="font-text rounded-none">
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+          <AlertDialogTitle className="font-text">Are you sure?</AlertDialogTitle>
           <AlertDialogDescription>
             Once you delete this poem, it cannot be restored.
           </AlertDialogDescription>

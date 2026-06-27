@@ -26,10 +26,10 @@ function RegisterPage() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen px-4">
+    <div className="font-text flex items-center justify-center min-h-screen px-4">
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle className="text-2xl text-center">Create an Account</CardTitle>
+          <CardTitle className="font-text text-2xl text-center">Create an Account</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">

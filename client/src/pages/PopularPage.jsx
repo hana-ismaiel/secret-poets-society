@@ -4,7 +4,6 @@ import Pagination from "@/components/Pagination"
 import LoadingSpinner from "@/components/LoadingSpinner"
 import { usePoems } from "@/hooks/usePoems"
 import { Button } from "@/components/ui/button"
-import { Flame } from "lucide-react"
 
 function PopularPage() {
   const { getPopularPoems } = usePoems()
@@ -48,8 +47,7 @@ function PopularPage() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
       <div className="flex items-center gap-2 mb-6">
-        <Flame className="text-orange-500" size={28} />
-        <h1 className="text-2xl font-bold">Trending Poems</h1>
+        <h1 className="font-text text-2xl font-bold">Trending Poems</h1>
       </div>
 
       <div className="flex gap-2 border-b pb-4 mb-8">
@@ -79,9 +77,9 @@ function PopularPage() {
       {loading ? (
         <LoadingSpinner />
       ) : error ? (
-        <p className="text-center text-destructive mt-10">{error}</p>
+        <p className="font-text text-center text-destructive mt-10">{error}</p>
       ) : poems.length === 0 ? (
-        <p className="text-center text-muted-foreground mt-10">No poems found in this range.</p>
+        <p className="font-text text-center text-muted-foreground mt-10">No poems found in this range.</p>
       ) : (
         <div className="flex flex-col">
           {poems.map((poem) => (

@@ -34,31 +34,31 @@ function Comment({ comment, poemId, onReplyCreated, depth = 0 }) {
 
   return (
     <div className={indentClass}>
-      <p className="text-sm font-medium">
+      <p className="font-text font-bold text-sm">
         <Link to={`/users/${comment.user_id}`} className="hover:underline">
           {comment.username}
         </Link>
       </p>
 
-      <p>{comment.content}</p>
+      <p className="font-text">{comment.content}</p>
 
       {user && (
         <button
           onClick={() => setShowReplyForm((prev) => !prev)}
-          className="text-xs text-muted-foreground hover:underline mt-1"
+          className="font-text text-xs text-muted-foreground hover:underline mt-1"
         >
           Reply
         </button>
       )}
 
       {showReplyForm && (
-        <div className="mt-2 max-w-md">
+        <div className="font-text mt-2 max-w-md">
           <Textarea
             placeholder="Write a reply..."
             value={replyContent}
             onChange={(e) => setReplyContent(e.target.value)}
           />
-          <div className="flex gap-2 mt-2 justify-end">
+          <div className="font-text flex gap-2 mt-2 justify-end">
             <Button variant="outline" onClick={handleCancel}>
               Cancel
             </Button>

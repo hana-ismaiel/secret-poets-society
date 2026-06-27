@@ -13,7 +13,7 @@ function ProfileTabs({ activeTab, onTabChange, isOwnProfile }) {
   ]
 
   return (
-    <div className="flex flex-col gap-1">
+    <div className="font-text flex flex-col gap-1">
       {tabs.map(({ key, label, icon: Icon }) => (
         <Button
           key={key}
