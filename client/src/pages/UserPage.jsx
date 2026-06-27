@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 import { useState, useEffect } from "react"
 import UserProfileCard from "@/components/UserProfileCard"
 import FollowButton from "@/components/FollowButton"
@@ -6,19 +6,24 @@ import ProfileTabs from "@/components/ProfileTabs"
 import PoemsTabPanel from "@/components/PoemsTabPanel"
 import UserListTabPanel from "@/components/UserListTabPanel"
 import LoadingSpinner from "@/components/LoadingSpinner"
+import NotFoundPage from "@/pages/NotFoundPage"
 import { useAuth } from "@/hooks/useAuth"
 import { useUsers } from "@/hooks/useUsers"
 
+const VALID_TABS = ["poems", "saved", "liked", "followers", "following"]
+
 function UserPage() {
-  const { id } = useParams()
+  const { id, tab } = useParams()
+  const navigate = useNavigate()
   const { user: currentUser } = useAuth()
   const { getUserById } = useUsers()
 
   const [profileUser, setProfileUser] = useState(null)
-  const [activeTab, setActiveTab] = useState("poems")
   const [loading, setLoading] = useState(true)
 
   const isOwnProfile = currentUser && String(currentUser.id) === String(id)
+  const isInvalidTab = tab !== undefined && !VALID_TABS.includes(tab)
+  const activeTab = !isInvalidTab && tab ? tab : "poems" // Default to "poems" tab if none provided
 
   useEffect(() => {
     async function loadProfile() {
@@ -26,7 +31,6 @@ function UserPage() {
       try {
         const userData = await getUserById(id)
         setProfileUser(userData)
-        setActiveTab("poems")
       } catch (err) {
         console.error("User not found", err)
       } finally {
@@ -39,8 +43,13 @@ function UserPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
 
+  function handleTabChange(newTab) {
+    navigate(`/users/${id}/${newTab}`)
+  }
+
   if (loading) return <LoadingSpinner />
   if (!profileUser) return <p className="text-center mt-10 text-red-500">User not found</p>
+  if (isInvalidTab || !profileUser) return <NotFoundPage />
 
   const tabTitles = {
     poems: isOwnProfile ? "My Poems" : `${profileUser.username}'s Poems`,
@@ -81,7 +90,7 @@ function UserPage() {
 
         <ProfileTabs
           activeTab={activeTab}
-          onTabChange={setActiveTab}
+          onTabChange={handleTabChange}
           isOwnProfile={isOwnProfile}
         />
       </div>
