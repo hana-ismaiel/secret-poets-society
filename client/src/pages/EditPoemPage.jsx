@@ -4,20 +4,20 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { usePoems } from "@/hooks/usePoems"
-import { useCategories } from "@/hooks/useCategories"
+import { useThemes } from "@/hooks/useThemes"
 import LoadingSpinner from "@/components/LoadingSpinner"
 
-const MAX_CATEGORIES = 3
+const MAX_THEMES = 3
 
 function EditPoemPage() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { editPoem, getPoemById } = usePoems() 
-  const { categories, loading: categoriesLoading } = useCategories()
+  const { themes, loading: themesLoading } = useThemes()
 
   const [title, setTitle] = useState("")
   const [content, setContent] = useState("")
-  const [selectedCategoryIds, setSelectedCategoryIds] = useState([])
+  const [selectedThemeIds, setSelectedThemeIds] = useState([])
   const [initialLoading, setInitialLoading] = useState(true)
   const [error, setError] = useState("")
   const [submitting, setSubmitting] = useState(false)
@@ -29,8 +29,8 @@ function EditPoemPage() {
         const poem = await getPoemById(id)
         setTitle(poem.title)
         setContent(poem.content)
-        if (poem.categories) {
-          setSelectedCategoryIds(poem.categories.map((c) => c.id))
+        if (poem.themes) {
+          setSelectedThemeIds(poem.themes.map((c) => c.id))
         }
       } catch (err) {
         setError(err.response?.data?.message || "Something went wrong")
@@ -42,15 +42,15 @@ function EditPoemPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
 
-  function toggleCategory(categoryId) {
-    setSelectedCategoryIds((prev) => {
-      if (prev.includes(categoryId)) {
-        return prev.filter((id) => id !== categoryId)
+  function toggleTheme(themeId) {
+    setSelectedThemeIds((prev) => {
+      if (prev.includes(themeId)) {
+        return prev.filter((id) => id !== themeId)
       }
-      if (prev.length >= MAX_CATEGORIES) {
+      if (prev.length >= MAX_THEMES) {
         return prev
       }
-      return [...prev, categoryId]
+      return [...prev, themeId]
     })
   }
 
@@ -68,7 +68,7 @@ function EditPoemPage() {
       await editPoem(id, {
         title,
         content,
-        categoryIds: selectedCategoryIds,
+        themeIds: selectedThemeIds,
       })
       navigate(`/poems/${id}`)
     } catch (err) {
@@ -99,28 +99,28 @@ function EditPoemPage() {
 
         <div>
           <p className="text-sm font-medium mb-2">
-            Categories (up to {MAX_CATEGORIES})
+            Themes (up to {MAX_THEMES})
           </p>
 
-          {categoriesLoading ? (
+          {themesLoading ? (
             <LoadingSpinner />
           ) : (
             <div className="flex flex-wrap gap-2">
-              {categories.map((category) => {
-                const isSelected = selectedCategoryIds.includes(category.id)
+              {themes.map((theme) => {
+                const isSelected = selectedThemeIds.includes(theme.id)
 
                 return (
                   <button
-                    key={category.id}
+                    key={theme.id}
                     type="button"
-                    onClick={() => toggleCategory(category.id)}
+                    onClick={() => toggleTheme(theme.id)}
                     className={`text-xs px-3 py-1 rounded-full border ${
                       isSelected
                         ? "bg-primary text-primary-foreground border-primary"
                         : "text-muted-foreground hover:bg-muted"
                     }`}
                   >
-                    {category.name}
+                    {theme.name}
                   </button>
                 )
               })}

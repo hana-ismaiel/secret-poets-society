@@ -1,18 +1,18 @@
 const pool = require("../db");
 
 const POEMS_PER_PAGE = 1;
-const attachCategories = require("../utils/attachCategories");
+const attachThemes = require("../utils/attachThemes");
 
 const createPoem = async (req, res) => {
-  const { title, content, categoryIds } = req.body;
+  const { title, content, themeIds } = req.body;
   const userId = req.user.id;
 
   if (!title || !content) {
     return res.status(400).json({ message: "Title and content are required" });
   }
 
-  if (categoryIds && categoryIds.length > 3) {
-    return res.status(400).json({ message: "You can select up to 3 categories" });
+  if (themeIds && themeIds.length > 3) {
+    return res.status(400).json({ message: "You can select up to 3 themes" });
   }
 
   try {
@@ -22,11 +22,11 @@ const createPoem = async (req, res) => {
       [title, content, userId]
     );
 
-    if (categoryIds && categoryIds.length > 0) {
-      for (const categoryId of categoryIds) {
+    if (themeIds && themeIds.length > 0) {
+      for (const themeId of themeIds) {
         await pool.query(
-          "INSERT INTO poem_categories (poem_id, category_id) VALUES ($1, $2)",
-          [newPoem.rows[0].id, categoryId]
+          "INSERT INTO poem_themes (poem_id, theme_id) VALUES ($1, $2)",
+          [newPoem.rows[0].id, themeId]
         );
       }
     }
@@ -72,14 +72,14 @@ const deletePoem = async (req, res) => {
 
 const editPoem = async (req, res) => {
   const { id } = req.params;
-  const { title, content, categoryIds } = req.body;
+  const { title, content, themeIds } = req.body;
 
   if (!title || !content) {
     return res.status(400).json({ message: "Title and content are required" });
   }
 
-  if (categoryIds && categoryIds.length > 3) {
-    return res.status(400).json({ message: "You can select up to 3 categories" });
+  if (themeIds && themeIds.length > 3) {
+    return res.status(400).json({ message: "You can select up to 3 themes" });
   }
 
   const userId = req.user.id;
@@ -104,16 +104,16 @@ const editPoem = async (req, res) => {
       [title, content, id]
     );
 
-    if (categoryIds) {
+    if (themeIds) {
       await pool.query(
-        "DELETE FROM poem_categories WHERE poem_id = $1", // Remove existing categories for that poem
+        "DELETE FROM poem_themes WHERE poem_id = $1", // Remove existing themes for that poem
         [id]
       );
 
-      for (const categoryId of categoryIds) {
+      for (const themeId of themeIds) {
         await pool.query(
-          "INSERT INTO poem_categories (poem_id, category_id) VALUES ($1, $2)",
-          [id, categoryId]
+          "INSERT INTO poem_themes (poem_id, theme_id) VALUES ($1, $2)",
+          [id, themeId]
         );
       }
     }
@@ -151,10 +151,10 @@ const getAllPoems = async (req, res) => {
       [limit, offset]
     );
 
-    const poemsWithCategories = await attachCategories(poems.rows);
+    const poemsWithThemes = await attachThemes(poems.rows);
 
     res.status(200).json({
-      poems: poemsWithCategories,
+      poems: poemsWithThemes,
       pagination: {
         totalPoems,
         totalPages,
@@ -191,17 +191,17 @@ const getPoemById = async (req, res) => {
       return res.status(404).json({ message: "Poem not found" });
     }
 
-    const poemCategories = await pool.query(
+    const poemThemes = await pool.query(
       `SELECT 
-        categories.id,
-        categories.name
-      FROM poem_categories
-      JOIN categories ON poem_categories.category_id = categories.id
-      WHERE poem_categories.poem_id = $1`,
+        themes.id,
+        themes.name
+      FROM poem_themes
+      JOIN themes ON poem_themes.theme_id = themes.id
+      WHERE poem_themes.poem_id = $1`,
       [id]
     );
 
-    poem.rows[0].categories = poemCategories.rows.map(poemCategory => ({ id: poemCategory.id, name: poemCategory.name }));
+    poem.rows[0].themes = poemThemes.rows.map(poemTheme => ({ id: poemTheme.id, name: poemTheme.name }));
 
     res.status(200).json(poem.rows[0]);
 
@@ -252,10 +252,10 @@ const getUserPoems = async (req, res) => {
       [userId, limit, offset]
     );
 
-    const poemsWithCategories = await attachCategories(poems.rows);
+    const poemsWithThemes = await attachThemes(poems.rows);
 
     res.status(200).json({
-      poems: poemsWithCategories,
+      poems: poemsWithThemes,
       pagination: {
         totalPoems,
         totalPages,
@@ -270,30 +270,30 @@ const getUserPoems = async (req, res) => {
   }
 };
 
-const getPoemsByCategory = async (req, res) => {
-  const { categoryId } = req.params;
+const getPoemsByTheme = async (req, res) => {
+  const { themeId } = req.params;
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || POEMS_PER_PAGE;
   const offset = (page - 1) * limit;
 
   try {
-    const category = await pool.query(
-      "SELECT id, name FROM categories WHERE id = $1",
-      [categoryId]
+    const theme = await pool.query(
+      "SELECT id, name FROM themes WHERE id = $1",
+      [themeId]
     );
 
-    if (category.rows.length === 0) {
-      return res.status(404).json({ message: "Category not found" });
+    if (theme.rows.length === 0) {
+      return res.status(404).json({ message: "Theme not found" });
     }
 
     const countResult = await pool.query(
-      "SELECT COUNT(*) FROM poem_categories WHERE category_id = $1",
-      [categoryId]
+      "SELECT COUNT(*) FROM poem_themes WHERE theme_id = $1",
+      [themeId]
     );
     const totalPoems = parseInt(countResult.rows[0].count);
     const totalPages = Math.ceil(totalPoems / limit);
 
-    // Find the poems that are tagged with the chosen category
+    // Find the poems that are tagged with the chosen theme
     const poems = await pool.query(
       `SELECT 
         poems.id,
@@ -304,18 +304,18 @@ const getPoemsByCategory = async (req, res) => {
         users.username AS author
       FROM poems
       JOIN users ON poems.user_id = users.id
-      JOIN poem_categories ON poems.id = poem_categories.poem_id
-      WHERE poem_categories.category_id = $1
+      JOIN poem_themes ON poems.id = poem_themes.poem_id
+      WHERE poem_themes.theme_id = $1
       ORDER BY poems.created_at DESC
       LIMIT $2 OFFSET $3`,
-      [categoryId, limit, offset]
+      [themeId, limit, offset]
     );
 
-    const poemsWithCategories = await attachCategories(poems.rows);
+    const poemsWithThemes = await attachThemes(poems.rows);
 
     res.status(200).json({
-      category: category.rows[0],
-      poems: poemsWithCategories,
+      theme: theme.rows[0],
+      poems: poemsWithThemes,
       pagination: {
         totalPoems,
         totalPages,
@@ -372,10 +372,10 @@ const getPopularPoems = async (req, res) => {
       [limit, offset]
     );
 
-    const poemsWithCategories = await attachCategories(poems.rows);
+    const poemsWithThemes = await attachThemes(poems.rows);
 
     res.status(200).json({
-      poems: poemsWithCategories,
+      poems: poemsWithThemes,
       pagination: {
         totalPoems,
         totalPages,
@@ -424,10 +424,10 @@ const getFollowingFeed = async (req, res) => {
       [followerId, limit, offset]
     );
 
-    const poemsWithCategories = await attachCategories(poems.rows);
+    const poemsWithThemes = await attachThemes(poems.rows);
 
     res.status(200).json({
-      poems: poemsWithCategories,
+      poems: poemsWithThemes,
       pagination: {
         totalPoems,
         totalPages,
@@ -476,10 +476,10 @@ const getUserLikes = async (req, res) => {
       [userId, limit, offset]
     );
 
-    const poemsWithCategories = await attachCategories(poems.rows);
+    const poemsWithThemes = await attachThemes(poems.rows);
 
     res.status(200).json({
-      poems: poemsWithCategories,
+      poems: poemsWithThemes,
       pagination: {
         totalPoems,
         totalPages,
@@ -528,10 +528,10 @@ const getUserSaves = async (req, res) => {
       [userId, limit, offset]
     );
 
-    const poemsWithCategories = await attachCategories(poems.rows);
+    const poemsWithThemes = await attachThemes(poems.rows);
 
     res.status(200).json({
-      poems: poemsWithCategories,
+      poems: poemsWithThemes,
       pagination: {
         totalPoems,
         totalPages,
@@ -553,7 +553,7 @@ module.exports = {
   getAllPoems,
   getPoemById,
   getUserPoems,
-  getPoemsByCategory,
+  getPoemsByTheme,
   getPopularPoems,
   getFollowingFeed,
   getUserLikes,

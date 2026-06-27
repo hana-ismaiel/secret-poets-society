@@ -27,14 +27,14 @@ function PoemCard({ poem, onDeleteSuccess }) {
       </CardHeader>
       <CardContent>
         <p className="whitespace-pre-line">{poem.content}</p>
-        {poem.categories && poem.categories.length > 0 && (
+        {poem.themes && poem.themes.length > 0 && (
           <div className="flex gap-2 mt-4">
-            {poem.categories.map((category) => (
+            {poem.themes.map((theme) => (
               <span
-                key={category.id}
+                key={theme.id}
                 className="text-xs bg-muted px-2 py-1 rounded-full"
               >
-                {category.name}
+                {theme.name}
               </span>
             ))}
           </div>

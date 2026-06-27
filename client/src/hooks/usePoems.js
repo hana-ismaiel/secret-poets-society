@@ -38,10 +38,10 @@ export function usePoems() {
     return response.data
   }
 
-  async function getPoemsByCategory(categoryId, page = 1, limit) {
+  async function getPoemsByTheme(themeId, page = 1, limit) {
     const url = limit 
-      ? `/poems/category/${categoryId}?page=${page}&limit=${limit}` 
-      : `/poems/category/${categoryId}?page=${page}`;
+      ? `/poems/theme/${themeId}?page=${page}&limit=${limit}` 
+      : `/poems/theme/${themeId}?page=${page}`;
       
     const response = await api.get(url)
     return response.data
@@ -81,7 +81,7 @@ export function usePoems() {
     createPoem,
     editPoem,
     deletePoem,
-    getPoemsByCategory,
+    getPoemsByTheme,
     getPopularPoems,
     getFollowingFeed,
     getUserLikes,

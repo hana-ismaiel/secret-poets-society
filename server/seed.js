@@ -11,12 +11,12 @@ const MAX_SAVED_POEMS_PER_USER = 8;
 
 async function seedDatabase() {
   try {
-    // Fetch existing categories
-    const categoryRes = await pool.query("SELECT id FROM categories");
-    const categoryIds = categoryRes.rows.map(row => row.id);
+    // Fetch existing themes
+    const themeRes = await pool.query("SELECT id FROM themes");
+    const themeIds = themeRes.rows.map(row => row.id);
 
-    if (categoryIds.length === 0) {
-      console.log("No categories found in categories table.");
+    if (themeIds.length === 0) {
+      console.log("No themes found in themes table.");
       process.exit(1);
     }
 
@@ -26,7 +26,7 @@ async function seedDatabase() {
     await pool.query("DELETE FROM likes");
     await pool.query("DELETE FROM saved_poems");
     await pool.query("DELETE FROM follows");
-    await pool.query("DELETE FROM poem_categories");
+    await pool.query("DELETE FROM poem_themes");
     await pool.query("DELETE FROM poems");
     await pool.query("DELETE FROM users");
 
@@ -77,14 +77,14 @@ async function seedDatabase() {
       const poemId = poemRes.rows[0].id;
       poemIds.push(poemId);
 
-      // Randomly assign 1 to 3 distinct categories to this poem
-      const numCategories = faker.number.int({ min: 1, max: 3 });
-      const chosenCategories = faker.helpers.arrayElements(categoryIds, numCategories);
+      // Randomly assign 1 to 3 distinct themes to this poem
+      const numThemes = faker.number.int({ min: 1, max: 3 });
+      const chosenThemes = faker.helpers.arrayElements(themeIds, numThemes);
 
-      for (const categoryId of chosenCategories) {
+      for (const themeId of chosenThemes) {
         await pool.query(
-          "INSERT INTO poem_categories (poem_id, category_id) VALUES ($1, $2)",
-          [poemId, categoryId]
+          "INSERT INTO poem_themes (poem_id, theme_id) VALUES ($1, $2)",
+          [poemId, themeId]
         );
       }
     }

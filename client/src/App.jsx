@@ -11,6 +11,7 @@ import CreatePoemPage from "./pages/CreatePoemPage"
 import EditPoemPage from "./pages/EditPoemPage"
 import FollowingPage from "./pages/FollowingPage"
 import ThemesPage from "./pages/ThemesPage"
+import ThemeDetailPage from "./pages/ThemeDetailPage"
 import PopularPage from "./pages/PopularPage"
 
 function App() {
@@ -30,6 +31,8 @@ function App() {
             <Route path="/users/:id" element={<UserPage />} />
             <Route path="/following" element={<FollowingPage />} />
             <Route path="/themes" element={<ThemesPage />} />
+            <Route path="/themes" element={<ThemesPage />} />
+            <Route path="/themes/:pathname" element={<ThemeDetailPage />} /> 
             <Route path="/popular" element={<PopularPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>

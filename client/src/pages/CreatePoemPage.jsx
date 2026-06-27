@@ -4,31 +4,31 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { usePoems } from "@/hooks/usePoems"
-import { useCategories } from "@/hooks/useCategories"
+import { useThemes } from "@/hooks/useThemes"
 import LoadingSpinner from "@/components/LoadingSpinner"
 
-const MAX_CATEGORIES = 3
+const MAX_THEMES = 3
 
 function CreatePoemPage() {
   const navigate = useNavigate()
   const { createPoem } = usePoems()
-  const { categories, loading: categoriesLoading } = useCategories()
+  const { themes, loading: themesLoading } = useThemes()
 
   const [title, setTitle] = useState("")
   const [content, setContent] = useState("")
-  const [selectedCategoryIds, setSelectedCategoryIds] = useState([])
+  const [selectedThemeIds, setSelectedThemeIds] = useState([])
   const [error, setError] = useState("")
   const [submitting, setSubmitting] = useState(false)
 
-  function toggleCategory(categoryId) {
-    setSelectedCategoryIds((prev) => {
-      if (prev.includes(categoryId)) {
-        return prev.filter((id) => id !== categoryId)
+  function toggleTheme(themeId) {
+    setSelectedThemeIds((prev) => {
+      if (prev.includes(themeId)) {
+        return prev.filter((id) => id !== themeId)
       }
-      if (prev.length >= MAX_CATEGORIES) {
+      if (prev.length >= MAX_THEMES) {
         return prev
       }
-      return [...prev, categoryId]
+      return [...prev, themeId]
     })
   }
 
@@ -46,7 +46,7 @@ function CreatePoemPage() {
       const newPoem = await createPoem({
         title,
         content,
-        categoryIds: selectedCategoryIds,
+        themeIds: selectedThemeIds,
       })
       navigate(`/poems/${newPoem.id}`)
     } catch (err) {
@@ -75,28 +75,28 @@ function CreatePoemPage() {
 
         <div>
           <p className="text-sm font-medium mb-2">
-            Categories (up to {MAX_CATEGORIES})
+            Themes (up to {MAX_THEMES})
           </p>
 
-          {categoriesLoading ? (
+          {themesLoading ? (
             <LoadingSpinner />
           ) : (
             <div className="flex flex-wrap gap-2">
-              {categories.map((category) => {
-                const isSelected = selectedCategoryIds.includes(category.id)
+              {themes.map((theme) => {
+                const isSelected = selectedThemeIds.includes(theme.id)
 
                 return (
                   <button
-                    key={category.id}
+                    key={theme.id}
                     type="button"
-                    onClick={() => toggleCategory(category.id)}
+                    onClick={() => toggleTheme(theme.id)}
                     className={`text-xs px-3 py-1 rounded-full border ${
                       isSelected
                         ? "bg-primary text-primary-foreground border-primary"
                         : "text-muted-foreground hover:bg-muted"
                     }`}
                   >
-                    {category.name}
+                    {theme.name}
                   </button>
                 )
               })}

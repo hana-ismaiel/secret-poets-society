@@ -29,14 +29,14 @@ function Poem({ poem }) {
         {poem.content}
       </p>
 
-      {poem.categories.length > 0 && (
+      {poem.themes.length > 0 && (
         <div className="flex flex-wrap gap-2 mt-10">
-          {poem.categories.map((category) => (
+          {poem.themes.map((theme) => (
             <span
-              key={category.id}
+              key={theme.id}
               className="text-xs bg-muted px-2 py-1 rounded-full"
             >
-              {category.name}
+              {theme.name}
             </span>
           ))}
         </div>

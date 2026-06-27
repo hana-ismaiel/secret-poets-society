@@ -7,7 +7,7 @@ const {
   getAllPoems,
   getPoemById,
   getUserPoems,
-  getPoemsByCategory,
+  getPoemsByTheme,
   getPopularPoems,
   getFollowingFeed,
   getUserLikes,
@@ -19,7 +19,7 @@ router.post("/", auth, createPoem);
 router.get("/popular", getPopularPoems);
 router.get("/", getAllPoems);
 router.get("/user/:userId", getUserPoems);
-router.get("/category/:categoryId", getPoemsByCategory);
+router.get("/theme/:themeId", getPoemsByTheme);
 router.get("/following", auth, getFollowingFeed);
 router.get("/likes", auth, getUserLikes);
 router.get("/saves", auth, getUserSaves);
