@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { usePoems } from "@/hooks/usePoems"
 import { useCategories } from "@/hooks/useCategories"
+import LoadingSpinner from "@/components/LoadingSpinner"
 
 const MAX_CATEGORIES = 3
 
@@ -78,7 +79,7 @@ function CreatePoemPage() {
           </p>
 
           {categoriesLoading ? (
-            <p className="text-sm text-muted-foreground">Loading categories...</p>
+            <LoadingSpinner />
           ) : (
             <div className="flex flex-wrap gap-2">
               {categories.map((category) => {

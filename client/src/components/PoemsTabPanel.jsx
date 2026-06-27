@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import PoemCard from "@/components/PoemCard"
 import Pagination from "@/components/Pagination"
 import { usePoems } from "@/hooks/usePoems"
+import LoadingSpinner from "./LoadingSpinner"
 
 function PoemsTabPanel({ userId, mode }) {
   // mode is "poems" | "saved" | "liked"
@@ -47,7 +48,7 @@ function PoemsTabPanel({ userId, mode }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, mode, currentPage])
 
-  if (loading) return <p className="text-center text-muted-foreground mt-10">Loading...</p>
+  if (loading) return <LoadingSpinner />
   if (error) return <p className="text-center text-red-500 mt-10">{error}</p>
   if (poems.length === 0) return <p className="text-center text-muted-foreground mt-10">No poems found.</p>
 

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import PoemCard from "@/components/PoemCard"
 import { usePoems } from "@/hooks/usePoems"
 import Pagination from "@/components/Pagination"
+import LoadingSpinner from "@/components/LoadingSpinner"
 
 function HomePage() {
   const { getAllPoems } = usePoems()
@@ -33,7 +34,7 @@ function HomePage() {
     setPoems((prevPoems) => prevPoems.filter(poem => poem.id !== deletedPoemId))
   }
 
-  if (loading) return <p className="text-center mt-10">Loading poems...</p>
+  if (loading) return <LoadingSpinner />
   if (error) return <p className="text-center mt-10 text-red-500">{error}</p>
 
   return (

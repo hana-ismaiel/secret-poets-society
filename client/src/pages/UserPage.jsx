@@ -5,6 +5,7 @@ import FollowButton from "@/components/FollowButton"
 import ProfileTabs from "@/components/ProfileTabs"
 import PoemsTabPanel from "@/components/PoemsTabPanel"
 import UserListTabPanel from "@/components/UserListTabPanel"
+import LoadingSpinner from "@/components/LoadingSpinner"
 import { useAuth } from "@/hooks/useAuth"
 import { useUsers } from "@/hooks/useUsers"
 
@@ -38,7 +39,7 @@ function UserPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
 
-  if (loading) return <p className="text-center mt-10">Loading profile...</p>
+  if (loading) return <LoadingSpinner />
   if (!profileUser) return <p className="text-center mt-10 text-red-500">User not found</p>
 
   const tabTitles = {

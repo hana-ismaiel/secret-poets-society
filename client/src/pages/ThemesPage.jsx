@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import PoemCard from "@/components/PoemCard"
 import Pagination from "@/components/Pagination"
+import LoadingSpinner from "@/components/LoadingSpinner"
 import { useCategories } from "@/hooks/useCategories"
 import { usePoems } from "@/hooks/usePoems"
 
@@ -51,7 +52,7 @@ function ThemesPage() {
       <h1 className="text-2xl font-bold mb-8">Explore Themes</h1>
 
       {categoriesLoading ? (
-        <p className="text-muted-foreground">Loading themes...</p>
+        <LoadingSpinner />
       ) : (
         <div className="flex flex-wrap gap-2 mb-10">
           {categories.map((category) => {
@@ -81,7 +82,7 @@ function ThemesPage() {
           </h2>
 
           {poemsLoading ? (
-            <p className="text-center text-muted-foreground mt-6">Loading poems...</p>
+            <LoadingSpinner />
           ) : error ? (
             <p className="text-center text-red-500 mt-6">{error}</p>
           ) : poems.length === 0 ? (

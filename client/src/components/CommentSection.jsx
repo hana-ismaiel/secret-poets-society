@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import { useComments } from "@/hooks/useComments"
 import CommentForm from "@/components/CommentForm"
 import Comment from "@/components/Comment"
+import LoadingSpinner from "./LoadingSpinner"
 
 function CommentSection({ poemId }) {
   const { getCommentsForPoem } = useComments()
@@ -39,7 +40,7 @@ function CommentSection({ poemId }) {
 
       <CommentForm poemId={poemId} onCommentCreated={handleCommentCreated} />
 
-      {loading && <p className="text-center mt-6">Loading comments...</p>}
+      {loading && <LoadingSpinner />}
       {error && <p className="text-center mt-6 text-red-500">{error}</p>}
 
       {!loading && !error && (

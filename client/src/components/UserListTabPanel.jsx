@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import UserListItem from "@/components/UserListItem"
 import { useFollows } from "@/hooks/useFollows"
+import LoadingSpinner from "./LoadingSpinner"
 
 function UserListTabPanel({ userId, mode }) {
   // mode is "followers" | "following"
@@ -31,7 +32,7 @@ function UserListTabPanel({ userId, mode }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, mode])
 
-  if (loading) return <p className="text-center text-muted-foreground mt-10">Loading...</p>
+  if (loading) return <LoadingSpinner />
   if (error) return <p className="text-center text-red-500 mt-10">{error}</p>
   if (users.length === 0) return <p className="text-center text-muted-foreground mt-10">No users found.</p>
 

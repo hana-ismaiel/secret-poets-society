@@ -3,6 +3,7 @@ import { useState, useEffect } from "react"
 import Poem from "@/components/Poem"
 import CommentSection from "@/components/CommentSection"
 import { usePoems } from "@/hooks/usePoems"
+import LoadingSpinner from "@/components/LoadingSpinner"
 
 function PoemPage() {
   const { id } = useParams()
@@ -26,7 +27,7 @@ function PoemPage() {
     fetchPoem()
   }, [id, getPoemById])
 
-  if (loading) return <p className="text-center mt-10">Loading poem...</p>
+  if (loading) return <LoadingSpinner />
   if (error) return <p className="text-center mt-10 text-red-500">{error}</p>
 
   return (

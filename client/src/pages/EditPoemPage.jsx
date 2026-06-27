@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { usePoems } from "@/hooks/usePoems"
 import { useCategories } from "@/hooks/useCategories"
+import LoadingSpinner from "@/components/LoadingSpinner"
 
 const MAX_CATEGORIES = 3
 
@@ -76,7 +77,7 @@ function EditPoemPage() {
     }
   }
 
-  if (initialLoading) return <p className="text-center mt-10">Loading poem details...</p>
+  if (initialLoading) return <LoadingSpinner />
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-12">
@@ -102,7 +103,7 @@ function EditPoemPage() {
           </p>
 
           {categoriesLoading ? (
-            <p className="text-sm text-muted-foreground">Loading categories...</p>
+            <LoadingSpinner />
           ) : (
             <div className="flex flex-wrap gap-2">
               {categories.map((category) => {

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import PoemCard from "@/components/PoemCard"
 import Pagination from "@/components/Pagination"
+import LoadingSpinner from "@/components/LoadingSpinner"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/hooks/useAuth"
 import { usePoems } from "@/hooks/usePoems"
@@ -55,7 +56,7 @@ function FollowingPage() {
     )
   }
 
-  if (loading) return <p className="text-center mt-10">Loading poems...</p>
+  if (loading) return <LoadingSpinner />
   if (error) return <p className="text-center mt-10 text-red-500">{error}</p>
 
   return (

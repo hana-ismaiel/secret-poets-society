@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import PoemCard from "@/components/PoemCard"
 import Pagination from "@/components/Pagination"
+import LoadingSpinner from "@/components/LoadingSpinner"
 import { usePoems } from "@/hooks/usePoems"
 import { Button } from "@/components/ui/button"
 import { Flame } from "lucide-react"
@@ -76,11 +77,11 @@ function PopularPage() {
       </div>
 
       {loading ? (
-        <p className="text-center text-muted-foreground mt-10">Loading popular works...</p>
+        <LoadingSpinner />
       ) : error ? (
         <p className="text-center text-destructive mt-10">{error}</p>
       ) : poems.length === 0 ? (
-        <p className="text-center text-muted-foreground mt-10">No trending poems found in this range.</p>
+        <p className="text-center text-muted-foreground mt-10">No poems found in this range.</p>
       ) : (
         <div className="flex flex-col">
           {poems.map((poem) => (
