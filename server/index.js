@@ -6,7 +6,7 @@ const poemRoutes = require("./routes/poem.route");
 const likeRoutes = require("./routes/like.route");
 const commentRoutes = require("./routes/comment.route");
 const categoryRoutes = require("./routes/category.route");
-const savedPoemRoutes = require("./routes/savedPoem.route");
+const saveRoutes = require("./routes/saves.route");
 const followRoutes = require("./routes/follow.route");
 
 const app = express();
@@ -19,7 +19,7 @@ app.use("/poems", poemRoutes);
 app.use("/likes", likeRoutes);
 app.use("/comments", commentRoutes);
 app.use("/categories", categoryRoutes);
-app.use("/saved", savedPoemRoutes);
+app.use("/saved", saveRoutes);
 app.use("/follows", followRoutes);
 
 app.use((req, res) => {
