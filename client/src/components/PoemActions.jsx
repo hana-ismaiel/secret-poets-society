@@ -21,12 +21,10 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 
-function PoemActions({ poem }) {
+function PoemActions({ poem, onDeleteSuccess }) {
   const navigate = useNavigate()
   const { user: currentUser } = useAuth()
   const { deletePoem } = usePoems()
-  
-  // Local state lets us cleanly toggle the dialog modal from inside the dropdown choice
   const [open, setOpen] = useState(false)
 
   const isOwner = currentUser && String(currentUser.id) === String(poem.author_id)
@@ -37,7 +35,11 @@ function PoemActions({ poem }) {
     try {
       await deletePoem(poem.id)
       setOpen(false)
-      navigate("/")
+      if (onDeleteSuccess) {
+        onDeleteSuccess(poem.id) // Pass deleted poem ID to the callback
+      } else {
+        navigate("/") // Fallback (if no callback provided)
+      }
     } catch (err) {
       console.error("Failed to delete poem:", err)
     }

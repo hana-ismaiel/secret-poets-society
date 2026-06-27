@@ -5,14 +5,14 @@ import SaveButton from "./SaveButton"
 import PoemActions from "./PoemActions"
 import { useAuth } from "@/hooks/useAuth"
 
-function PoemCard({ poem }) {
+function PoemCard({ poem, onDeleteSuccess }) {
   const { user: currentUser } = useAuth()
   const isOwnPoem = currentUser && String(currentUser.id) === String(poem.author_id)
 
   return (
     <Card className="mb-8 rounded-none relative">
       <div className="absolute top-4 right-4 z-10">
-        <PoemActions poem={poem} />
+        <PoemActions poem={poem} onDeleteSuccess={onDeleteSuccess}/>
       </div>
       <CardHeader>
         <Link to={`/poems/${poem.id}`} className="hover:underline">

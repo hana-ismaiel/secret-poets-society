@@ -29,6 +29,10 @@ function HomePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage])
 
+  const handlePoemDeleted = (deletedPoemId) => {
+    setPoems((prevPoems) => prevPoems.filter(poem => poem.id !== deletedPoemId))
+  }
+
   if (loading) return <p className="text-center mt-10">Loading poems...</p>
   if (error) return <p className="text-center mt-10 text-red-500">{error}</p>
 
@@ -39,7 +43,7 @@ function HomePage() {
       ) : (
         <div className="flex flex-col gap-8">
           {poems.map((poem) => (
-            <PoemCard key={poem.id} poem={poem} />
+            <PoemCard key={poem.id} poem={poem} onDeleteSuccess={handlePoemDeleted} />
           ))}
         </div>
       )}

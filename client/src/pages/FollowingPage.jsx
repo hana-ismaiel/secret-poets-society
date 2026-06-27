@@ -38,6 +38,10 @@ function FollowingPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, currentPage])
 
+  const handlePoemDeleted = (deletedPoemId) => {
+    setPoems((prevPoems) => prevPoems.filter(poem => poem.id !== deletedPoemId))
+  }
+
   if (!user) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-12 text-center">
@@ -65,7 +69,7 @@ function FollowingPage() {
       ) : (
         <div className="flex flex-col gap-8">
           {poems.map((poem) => (
-            <PoemCard key={poem.id} poem={poem} />
+            <PoemCard key={poem.id} poem={poem} onDeleteSuccess={handlePoemDeleted} />
           ))}
 
           <Pagination

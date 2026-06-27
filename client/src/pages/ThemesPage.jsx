@@ -35,6 +35,10 @@ function ThemesPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCategory, currentPage])
 
+  const handlePoemDeleted = (deletedPoemId) => {
+    setPoems((prevPoems) => prevPoems.filter(poem => poem.id !== deletedPoemId))
+  }
+
   function handleSelectCategory(category) {
     setPoems([])
     setCurrentPage(1) // Reset back to page 1
@@ -44,7 +48,7 @@ function ThemesPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Explore Themes</h1>
+      <h1 className="text-2xl font-bold mb-8">Explore Themes</h1>
 
       {categoriesLoading ? (
         <p className="text-muted-foreground">Loading themes...</p>
@@ -85,7 +89,7 @@ function ThemesPage() {
               No poems found in this theme yet
             </p>
           ) : (
-            poems.map((poem) => <PoemCard key={poem.id} poem={poem} />)
+            poems.map((poem) => <PoemCard key={poem.id} poem={poem} onDeleteSuccess={handlePoemDeleted} />)
           )}
           <Pagination
             currentPage={currentPage}

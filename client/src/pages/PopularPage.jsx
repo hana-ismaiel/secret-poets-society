@@ -33,6 +33,10 @@ function PopularPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeframe, currentPage])
 
+  const handlePoemDeleted = (deletedPoemId) => {
+    setPoems((prevPoems) => prevPoems.filter(poem => poem.id !== deletedPoemId))
+  }
+
   function handleTimeframeChange(newTimeframe) {
     setPoems([])
     setCurrentPage(1) // Reset to first page
@@ -44,7 +48,7 @@ function PopularPage() {
     <div className="max-w-2xl mx-auto px-4 py-8">
       <div className="flex items-center gap-2 mb-6">
         <Flame className="text-orange-500" size={28} />
-        <h1 className="text-3xl font-bold">Trending Poems</h1>
+        <h1 className="text-2xl font-bold">Trending Poems</h1>
       </div>
 
       <div className="flex gap-2 border-b pb-4 mb-8">
@@ -80,7 +84,7 @@ function PopularPage() {
       ) : (
         <div className="flex flex-col">
           {poems.map((poem) => (
-            <PoemCard key={poem.id} poem={poem} />
+            <PoemCard key={poem.id} poem={poem} onDeleteSuccess={handlePoemDeleted} />
           ))}
           <Pagination
             currentPage={currentPage}
