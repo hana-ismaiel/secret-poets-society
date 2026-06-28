@@ -546,6 +546,61 @@ const getUserSaves = async (req, res) => {
   }
 };
 
+const searchPoems = async (req, res) => {
+  const q = req.query.q;
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || POEMS_PER_PAGE;
+  const offset = (page - 1) * limit;
+
+  if (!q || !q.trim()) {
+    return res.status(400).json({ message: "Search query cannot be empty" });
+  }
+
+  const searchTerm = `%${q.trim()}%`;
+
+  try {
+    const countResult = await pool.query(
+      `SELECT COUNT(*) FROM poems
+       WHERE title ILIKE $1 OR content ILIKE $1`,
+      [searchTerm]
+    );
+    const totalPoems = parseInt(countResult.rows[0].count);
+    const totalPages = Math.ceil(totalPoems / limit);
+
+    const poems = await pool.query(
+      `SELECT 
+        poems.id,
+        poems.title,
+        poems.content,
+        poems.created_at,
+        poems.user_id AS author_id,
+        users.username AS author
+      FROM poems
+      JOIN users ON poems.user_id = users.id
+      WHERE poems.title ILIKE $1 OR poems.content ILIKE $1
+      ORDER BY poems.created_at DESC
+      LIMIT $2 OFFSET $3`,
+      [searchTerm, limit, offset]
+    );
+
+    const poemsWithThemes = await attachThemes(poems.rows);
+
+    res.status(200).json({
+      poems: poemsWithThemes,
+      pagination: {
+        totalPoems,
+        totalPages,
+        currentPage: page,
+        limit
+      }
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 module.exports = {
   createPoem,
   deletePoem,
@@ -557,5 +612,6 @@ module.exports = {
   getPopularPoems,
   getFollowingFeed,
   getUserLikes,
-  getUserSaves
+  getUserSaves,
+  searchPoems
 };

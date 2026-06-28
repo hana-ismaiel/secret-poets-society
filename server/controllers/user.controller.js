@@ -2,6 +2,8 @@ const pool = require("../db");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+const USERS_PER_PAGE = 3;
+
 const register = async (req, res) => {
   const { username, email, password } = req.body;
 
@@ -126,4 +128,50 @@ const getUserById = async (req, res) => {
   }
 };
 
-module.exports = { register, login, getUserById };
+const searchUsers = async (req, res) => {
+  const q = req.query.q;
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || USERS_PER_PAGE;
+  const offset = (page - 1) * limit;
+
+  if (!q || !q.trim()) {
+    return res.status(400).json({ message: "Search query cannot be empty" });
+  }
+
+  const searchTerm = `%${q.trim()}%`;
+
+  try {
+    const countResult = await pool.query(
+      `SELECT COUNT(*) FROM users
+       WHERE username ILIKE $1`,
+      [searchTerm]
+    );
+    const totalUsers = parseInt(countResult.rows[0].count);
+    const totalPages = Math.ceil(totalUsers / limit);
+
+    const users = await pool.query(
+      `SELECT id, username, created_at
+      FROM users
+      WHERE username ILIKE $1
+      ORDER BY username ASC
+      LIMIT $2 OFFSET $3`,
+      [searchTerm, limit, offset]
+    );
+
+    res.status(200).json({
+      users: users.rows,
+      pagination: {
+        totalUsers,
+        totalPages,
+        currentPage: page,
+        limit
+      }
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+module.exports = { register, login, getUserById, searchUsers };

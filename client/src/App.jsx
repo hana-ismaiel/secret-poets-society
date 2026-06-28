@@ -12,6 +12,7 @@ import EditPoemPage from "./pages/EditPoemPage"
 import FollowingPage from "./pages/FollowingPage"
 import ThemesPage from "./pages/ThemesPage"
 import ThemeDetailPage from "./pages/ThemeDetailPage"
+import SearchPage from "./pages/SearchPage"
 import PopularPage from "./pages/PopularPage"
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
             <Route path="/themes" element={<ThemesPage />} />
             <Route path="/themes/:pathname" element={<ThemeDetailPage />} /> 
             <Route path="/popular" element={<PopularPage />} />
+            <Route path="/search" element={<SearchPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </main>

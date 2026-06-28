@@ -11,13 +11,15 @@ const {
   getPopularPoems,
   getFollowingFeed,
   getUserLikes,
-  getUserSaves
+  getUserSaves,
+  searchPoems
 } = require("../controllers/poem.controller");
 const auth = require("../middleware/auth");
 
 router.post("/", auth, createPoem);
 router.get("/popular", getPopularPoems);
 router.get("/", getAllPoems);
+router.get("/search", searchPoems);
 router.get("/user/:userId", getUserPoems);
 router.get("/theme/:themeId", getPoemsByTheme);
 router.get("/following", auth, getFollowingFeed);

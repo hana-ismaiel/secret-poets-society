@@ -1,7 +1,8 @@
 import { Link, useLocation } from "react-router-dom"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import SearchBar from "./SearchBar"
 import { useAuth } from "@/hooks/useAuth"
+
 function Navbar() {
   const location = useLocation()
   const { user, logout } = useAuth()
@@ -18,9 +19,7 @@ function Navbar() {
         Secret Poets Society
       </Link>
 
-      <div className="flex items-center gap-4 flex-1 max-w-md">
-        <Input type="text" placeholder="Search poems..." />
-      </div>
+      <SearchBar />
 
       <div className="font-text">
         {user ? (

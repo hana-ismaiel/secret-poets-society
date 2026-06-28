@@ -47,7 +47,7 @@ function PopularPage() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
       <div className="flex items-center gap-2 mb-6">
-        <h1 className="font-text text-2xl font-bold">Trending Poems</h1>
+        <h1 className="font-text text-2xl font-bold">Popular Poems</h1>
       </div>
 
       <div className="flex gap-2 border-b pb-4 mb-8">
