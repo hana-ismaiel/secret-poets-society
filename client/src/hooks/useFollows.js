@@ -21,15 +21,21 @@ export function useFollows() {
     return response.data
   }
 
-  async function getFollowers(userId) {
-  const response = await api.get(`/follows/${userId}/followers`)
-  return response.data
-}
+  async function getFollowers(userId, page = 1, limit) {
+    const url = limit
+      ? `/follows/${userId}/followers?page=${page}&limit=${limit}`
+      : `/follows/${userId}/followers?page=${page}`;
+    const response = await api.get(url)
+    return response.data
+  }
 
-async function getFollowing(userId) {
-  const response = await api.get(`/follows/${userId}/following`)
-  return response.data
-}
+  async function getFollowing(userId, page = 1, limit) {
+    const url = limit
+      ? `/follows/${userId}/following?page=${page}&limit=${limit}`
+      : `/follows/${userId}/following?page=${page}`;
+    const response = await api.get(url)
+    return response.data
+  }
 
   return { 
     toggleFollow,

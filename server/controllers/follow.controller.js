@@ -1,5 +1,7 @@
 const pool = require("../db");
 
+const USERS_PER_PAGE = 1;
+
 const toggleFollow = async (req, res) => {
   const { followingId } = req.params; // the person being followed/unfollowed
   const followerId = req.user.id; // the person doing the following
@@ -101,18 +103,38 @@ const getFollowingCount = async (req, res) => {
 
 const getFollowers = async (req, res) => {
   const { userId } = req.params;
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || USERS_PER_PAGE;
+  const offset = (page - 1) * limit;
 
   try {
+    const countResult = await pool.query(
+      `SELECT COUNT(*) FROM follows
+      WHERE follows.following_id = $1`,
+      [userId]
+    );
+    const totalUsers = parseInt(countResult.rows[0].count);
+    const totalPages = Math.ceil(totalUsers / limit);
+
     const followers = await pool.query(
       `SELECT users.id, users.username, users.created_at
        FROM follows
        JOIN users ON follows.follower_id = users.id
        WHERE follows.following_id = $1
-       ORDER BY follows.created_at DESC`,
-      [userId]
+       ORDER BY follows.created_at DESC
+       LIMIT $2 OFFSET $3`,
+      [userId, limit, offset]
     );
 
-    res.status(200).json(followers.rows);
+    res.status(200).json({
+      users: followers.rows,
+      pagination: {
+        totalUsers,
+        totalPages,
+        currentPage: page,
+        limit
+      }
+    });
 
   } catch (error) {
     console.error(error);
@@ -122,18 +144,38 @@ const getFollowers = async (req, res) => {
 
 const getFollowing = async (req, res) => {
   const { userId } = req.params;
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || USERS_PER_PAGE;
+  const offset = (page - 1) * limit;
 
   try {
+    const countResult = await pool.query(
+      `SELECT COUNT(*) FROM follows
+      WHERE follows.follower_id = $1`,
+      [userId]
+    );
+    const totalUsers = parseInt(countResult.rows[0].count);
+    const totalPages = Math.ceil(totalUsers / limit);
+
     const following = await pool.query(
       `SELECT users.id, users.username, users.created_at
        FROM follows
        JOIN users ON follows.following_id = users.id
        WHERE follows.follower_id = $1
-       ORDER BY follows.created_at DESC`,
-      [userId]
+       ORDER BY follows.created_at DESC
+       LIMIT $2 OFFSET $3`,
+      [userId, limit, offset]
     );
 
-    res.status(200).json(following.rows);
+    res.status(200).json({
+      users: following.rows,
+      pagination: {
+        totalUsers,
+        totalPages,
+        currentPage: page,
+        limit
+      }
+    });
 
   } catch (error) {
     console.error(error);

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import UserListItem from "@/components/UserListItem"
+import Pagination from "@/components/Pagination"
 import { useFollows } from "@/hooks/useFollows"
 import LoadingSpinner from "./LoadingSpinner"
 
@@ -8,6 +9,8 @@ function UserListTabPanel({ userId, mode }) {
   const { getFollowers, getFollowing } = useFollows()
 
   const [users, setUsers] = useState([])
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -16,10 +19,11 @@ function UserListTabPanel({ userId, mode }) {
       setLoading(true)
       try {
         const data = mode === "followers"
-          ? await getFollowers(userId)
-          : await getFollowing(userId)
+          ? await getFollowers(userId, currentPage)
+          : await getFollowing(userId, currentPage)
 
-        setUsers(data)
+        setUsers(data.users)
+        setTotalPages(data.pagination.totalPages)
       } catch (err) {
         setError(err.response?.data?.message || "Something went wrong")
       } finally {
@@ -30,7 +34,7 @@ function UserListTabPanel({ userId, mode }) {
     fetchUsers()
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId, mode])
+  }, [userId, mode, currentPage])
 
   if (loading) return <LoadingSpinner />
   if (error) return <p className="font-text text-center text-red-500 mt-10">{error}</p>
@@ -39,6 +43,12 @@ function UserListTabPanel({ userId, mode }) {
   return (
     <div className="flex flex-col">
       {users.map((user) => <UserListItem key={user.id} user={user} />)}
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+      />
     </div>
   )
 }

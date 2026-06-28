@@ -21,21 +21,13 @@ function PoemsTabPanel({ userId, mode }) {
         let data = []
         if (mode === "poems") {
           data = await getUserPoems(userId, currentPage)
-          setPoems(data.poems)
-          setTotalPages(data.pagination.totalPages)
-        }
-        if (mode === "saved") {
+        } else if (mode === "saved") {
           data = await getUserSaves(currentPage)
-          setPoems(data.poems)
-          setTotalPages(data.pagination.totalPages)
-        }
-        if (mode === "liked") {
+        } else { // (mode === "liked")
           data = await getUserLikes(currentPage)
-          setPoems(data.poems)
-          setTotalPages(data.pagination.totalPages)
         }
-
-        // setPoems(data.poems)
+        setPoems(data.poems)
+        setTotalPages(data.pagination.totalPages)
       } catch (err) {
         setError(err.response?.data?.message || "Something went wrong")
       } finally {
@@ -57,10 +49,10 @@ function PoemsTabPanel({ userId, mode }) {
       {poems.map((poem) => <PoemCard key={poem.id} poem={poem} />)}
 
       <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+      />
     </div>
   )
 }
