@@ -10,7 +10,7 @@ function PoemCard({ poem, onDeleteSuccess }) {
   const isOwnPoem = currentUser && String(currentUser.id) === String(poem.author_id)
 
   return (
-    <Card className="mb-8 rounded-none relative">
+    <Card className="mb-8 rounded-none relative bg-poem">
       <div className="absolute top-4 right-4 z-10">
         <PoemActions poem={poem} onDeleteSuccess={onDeleteSuccess}/>
       </div>

@@ -142,3 +142,11 @@
   font-family: 'PT Serif', serif;
   font-style: italic;
 }
+
+@utility bg-warm {
+  background-color: #F5F7ED;
+}
+
+@utility bg-poem {
+  background-color: #FEFFF7;
+}

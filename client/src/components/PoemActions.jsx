@@ -84,7 +84,8 @@ function PoemActions({ poem, onDeleteSuccess }) {
           <AlertDialogCancel className="rounded-none">Cancel</AlertDialogCancel>
           <AlertDialogAction 
             onClick={handleDelete}
-            className="bg-destructive text-destructive-foreground hover:bg-destructive/90 rounded-none"
+            variant="destructive"
+            className="rounded-none"
           >
             Delete Poem
           </AlertDialogAction>

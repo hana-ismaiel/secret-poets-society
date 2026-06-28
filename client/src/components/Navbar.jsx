@@ -13,7 +13,7 @@ function Navbar() {
   }
 
   return (
-    <nav className="flex items-center justify-between px-6 py-4 border-b gap-4">
+    <nav className="flex items-center justify-between px-6 py-4 border-b gap-4 bg-warm">
       <Link to="/" className="font-title text-2xl font-semibold">
         Secret Poets Society
       </Link>
