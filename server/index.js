@@ -8,6 +8,7 @@ const commentRoutes = require("./routes/comment.route");
 const themeRoutes = require("./routes/theme.route");
 const saveRoutes = require("./routes/saves.route");
 const followRoutes = require("./routes/follow.route");
+const aiRoutes = require("./routes/ai.route.js")
 
 const app = express();
 
@@ -21,6 +22,8 @@ app.use("/comments", commentRoutes);
 app.use("/themes", themeRoutes);
 app.use("/saved", saveRoutes);
 app.use("/follows", followRoutes);
+app.use("/ai", aiRoutes);
+
 
 app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });
