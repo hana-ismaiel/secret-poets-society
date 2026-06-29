@@ -14,6 +14,7 @@ import ThemesPage from "./pages/ThemesPage"
 import ThemeDetailPage from "./pages/ThemeDetailPage"
 import SearchPage from "./pages/SearchPage"
 import PopularPage from "./pages/PopularPage"
+import AiGenerationPage from "./pages/AiGenerationPage"
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
             <Route path="/themes/:pathname" element={<ThemeDetailPage />} /> 
             <Route path="/popular" element={<PopularPage />} />
             <Route path="/search" element={<SearchPage />} />
+            <Route path="/ai-generation" element={<AiGenerationPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </main>

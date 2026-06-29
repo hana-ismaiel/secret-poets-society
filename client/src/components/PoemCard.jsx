@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"
 import LikeButton from "./LikeButton"
 import SaveButton from "./SaveButton"
 import PoemActions from "./PoemActions"
+import AiGeneratedBadge from "./AiGeneratedBadge"
 import { useAuth } from "@/hooks/useAuth"
 
 function PoemCard({ poem, onDeleteSuccess }) {
@@ -15,9 +16,12 @@ function PoemCard({ poem, onDeleteSuccess }) {
         <PoemActions poem={poem} onDeleteSuccess={onDeleteSuccess}/>
       </div>
       <CardHeader>
-        <Link to={`/poems/${poem.id}`} className="hover:underline">
-          <CardTitle className="font-text text-2xl font-bold">{poem.title}</CardTitle>
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link to={`/poems/${poem.id}`} className="hover:underline">
+            <CardTitle className="text-2xl font-bold">{poem.title}</CardTitle>
+          </Link>
+          {poem.is_ai_generated && <AiGeneratedBadge />}
+        </div>
         <CardDescription className="font-text text-lg">
             by {" "}
             <Link to={`/users/${poem.author_id}`} className="font-text-italic text-primary hover:underline font-medium">

@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -14,9 +14,13 @@ function CreatePoemPage() {
   const { createPoem } = usePoems()
   const { themes, loading: themesLoading } = useThemes()
 
-  const [title, setTitle] = useState("")
-  const [content, setContent] = useState("")
+  const location = useLocation()
+  const prefill = location.state || {}
+
+  const [title, setTitle] = useState(prefill.prefillTitle || "")
+  const [content, setContent] = useState(prefill.prefillContent || "")
   const [selectedThemeIds, setSelectedThemeIds] = useState([])
+  const isAiGenerated = prefill.isAiGenerated || false
   const [error, setError] = useState("")
   const [submitting, setSubmitting] = useState(false)
 
@@ -47,6 +51,7 @@ function CreatePoemPage() {
         title,
         content,
         themeIds: selectedThemeIds,
+        isAiGenerated,
       })
       navigate(`/poems/${newPoem.id}`)
     } catch (err) {
@@ -76,8 +81,8 @@ function CreatePoemPage() {
         />
 
         <div>
-          <p className="font-text font-bold text-sm mb-2">
-            Themes (up to {MAX_THEMES})
+          <p className="font-text text-sm font-medium mb-2">
+            Themes (optional, up to {MAX_THEMES})
           </p>
 
           {themesLoading ? (
@@ -94,7 +99,7 @@ function CreatePoemPage() {
                     onClick={() => toggleTheme(theme.id)}
                     className={`text-xs px-3 py-1 rounded-full border ${
                       isSelected
-                        ? "bg-primary text-primary-foreground border-primary"
+                        ? "bg-lime-600 text-white border-lime-600"
                         : "text-muted-foreground hover:bg-muted"
                     }`}
                   >

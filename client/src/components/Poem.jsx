@@ -2,6 +2,7 @@ import { Link } from "react-router-dom"
 import LikeButton from "./LikeButton"
 import SaveButton from "./SaveButton"
 import PoemActions from "./PoemActions"
+import AiGeneratedBadge from "./AiGeneratedBadge"
 import { useAuth } from "@/hooks/useAuth"
 
 function Poem({ poem }) {
@@ -13,7 +14,11 @@ function Poem({ poem }) {
       <div className="absolute top-12 right-4">
         <PoemActions poem={poem} />
       </div>
-      <h1 className="font-text text-3xl font-bold mb-2">{poem.title}</h1>
+      <div className="flex items-center gap-2">
+        <h1 className="font-text text-3xl font-bold mb-2">{poem.title}</h1>
+        {poem.is_ai_generated && <AiGeneratedBadge />}
+      </div>
+      
 
       <p className="text-lg mb-8">
         by{" "}

@@ -118,7 +118,7 @@ function EditPoemPage() {
                     onClick={() => toggleTheme(theme.id)}
                     className={`text-xs px-3 py-1 rounded-full border ${
                       isSelected
-                        ? "bg-primary text-primary-foreground border-primary"
+                        ? "bg-lime-600 text-white border-lime-600"
                         : "text-muted-foreground hover:bg-muted"
                     }`}
                   >

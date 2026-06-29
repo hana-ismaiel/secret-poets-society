@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom"
-import { Home, Users, TrendingUp, PenSquare, Tags } from "lucide-react"
+import { Home, Users, TrendingUp, PenSquare, Tags, Sparkle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/hooks/useAuth"
 
@@ -21,7 +21,7 @@ function Sidebar() {
   }
 
   return (
-    <aside className="w-48 border-r px-4 py-6 hidden md:block">
+    <aside className="w-58 border-r px-4 py-6 hidden md:block">
 
       {user && (
         <div className="flex flex-col gap-4">
@@ -54,6 +54,17 @@ function Sidebar() {
             </Link>
           )
         })}
+        <Link
+          to="/ai-generation"
+          className={`font-text flex items-center gap-2 px-3 py-2 rounded-md text-sm transition-colors ${
+            location.pathname === "/ai-generation"
+              ? "bg-emerald-500/10 text-emerald-600 font-medium"
+              : "hover:bg-emerald-500/10 hover:text-emerald-600 text-muted-foreground"
+          }`}
+        >
+          <Sparkle size={18} />
+          AI Poem Generation
+        </Link>
       </nav>
     </aside>
   )

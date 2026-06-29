@@ -4,7 +4,7 @@ const POEMS_PER_PAGE = 1;
 const attachThemes = require("../utils/attachThemes");
 
 const createPoem = async (req, res) => {
-  const { title, content, themeIds } = req.body;
+  const { title, content, themeIds, isAiGenerated } = req.body;
   const userId = req.user.id;
 
   if (!title || !content) {
@@ -17,9 +17,9 @@ const createPoem = async (req, res) => {
 
   try {
     const newPoem = await pool.query(
-      `INSERT INTO poems (title, content, user_id) VALUES ($1, $2, $3) 
-      RETURNING id, title, content, created_at`,
-      [title, content, userId]
+      `INSERT INTO poems (title, content, user_id, is_ai_generated) VALUES ($1, $2, $3, $4) 
+      RETURNING id, title, content, created_at, is_ai_generated`,
+      [title, content, userId, isAiGenerated ?? false]
     );
 
     if (themeIds && themeIds.length > 0) {
@@ -142,6 +142,7 @@ const getAllPoems = async (req, res) => {
         poems.title,
         poems.content,
         poems.created_at,
+        poems.is_ai_generated,
         poems.user_id AS author_id,
         users.username AS author
       FROM poems
@@ -179,6 +180,7 @@ const getPoemById = async (req, res) => {
         poems.title,
         poems.content,
         poems.created_at,
+        poems.is_ai_generated,
         poems.user_id AS author_id,
         users.username AS author
       FROM poems
@@ -241,6 +243,7 @@ const getUserPoems = async (req, res) => {
         poems.title,
         poems.content,
         poems.created_at,
+        poems.is_ai_generated,
         poems.modified_at,
         poems.user_id AS author_id,
         users.username AS author
@@ -300,6 +303,7 @@ const getPoemsByTheme = async (req, res) => {
         poems.title,
         poems.content,
         poems.created_at,
+        poems.is_ai_generated,
         poems.user_id AS author_id,
         users.username AS author
       FROM poems
@@ -359,6 +363,7 @@ const getPopularPoems = async (req, res) => {
         poems.title,
         poems.content,
         poems.created_at,
+        poems.is_ai_generated,
         poems.user_id AS author_id,
         users.username AS author,
         COUNT(likes.id)::int AS like_count
@@ -413,6 +418,7 @@ const getFollowingFeed = async (req, res) => {
         poems.title,
         poems.content,
         poems.created_at,
+        poems.is_ai_generated,
         poems.user_id AS author_id,
         users.username AS author
       FROM poems
@@ -464,6 +470,7 @@ const getUserLikes = async (req, res) => {
         poems.title,
         poems.content,
         poems.created_at,
+        poems.is_ai_generated,
         likes.created_at AS liked_at,
         users.username AS author,
         poems.user_id AS author_id
@@ -516,6 +523,7 @@ const getUserSaves = async (req, res) => {
         poems.title,
         poems.content,
         poems.created_at,
+        poems.is_ai_generated,
         poems.user_id AS author_id,
         users.username AS author,
         saves.created_at AS saved_at
@@ -573,6 +581,7 @@ const searchPoems = async (req, res) => {
         poems.title,
         poems.content,
         poems.created_at,
+        poems.is_ai_generated,
         poems.user_id AS author_id,
         users.username AS author
       FROM poems

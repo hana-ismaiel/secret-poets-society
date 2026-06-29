@@ -150,3 +150,7 @@
 @utility bg-poem {
   background-color: #FEFFF7;
 }
+
+.preserve-whitespace {
+  white-space: pre-wrap;
+}
