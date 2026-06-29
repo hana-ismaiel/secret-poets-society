@@ -2,7 +2,7 @@ const pool = require("../db");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-const USERS_PER_PAGE = 3;
+const USERS_PER_PAGE = 30;
 
 const register = async (req, res) => {
   const { username, email, password } = req.body;
@@ -112,7 +112,7 @@ const getUserById = async (req, res) => {
 
   try {
     const user = await pool.query(
-      "SELECT id, username, created_at FROM users WHERE id = $1",
+      "SELECT id, username, created_at, bio FROM users WHERE id = $1",
       [id]
     );
 
@@ -174,4 +174,31 @@ const searchUsers = async (req, res) => {
   }
 };
 
-module.exports = { register, login, getUserById, searchUsers };
+const updateBio = async (req, res) => {
+  const userId = req.user.id;
+  const { bio } = req.body;
+
+  // Validation
+  if (bio === undefined) {
+    return res.status(400).json({ message: "Bio content body is required" });
+  }
+  if (bio.length > 500) {
+    return res.status(400).json({ message: "Bio must be 500 characters or less" });
+  }
+
+  try {
+    const updatedUser = await pool.query(
+      `UPDATE users SET bio = $1 WHERE id = $2 
+      RETURNING id, username, bio, created_at`,
+      [bio.trim(), userId]
+    );
+
+    res.status(200).json(updatedUser.rows[0]);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+module.exports = { register, login, getUserById, searchUsers, updateBio };

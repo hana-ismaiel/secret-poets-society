@@ -60,8 +60,8 @@ function UserPage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8 flex flex-col md:flex-row gap-8">
-      <div className="flex-1 flex flex-col gap-8">
+    <div className="max-w-6xl mx-auto px-4 py-8 flex flex-col md:flex-row gap-8">
+      <div className="max-w-2xl mx-auto w-full flex flex-col gap-8">
         <h2 className="font-text text-xl font-bold border-b pb-2">{tabTitles[activeTab]}</h2>
 
         {(activeTab === "poems" || activeTab === "saved" || activeTab === "liked") && (
@@ -81,8 +81,14 @@ function UserPage() {
         )}
       </div>
 
-      <div className="w-full md:w-64 flex flex-col gap-4">
-        <UserProfileCard user={profileUser} />
+      <div className="w-full md:w-75 shrink-0 flex flex-col gap-4">
+        <UserProfileCard 
+          user={profileUser} 
+          isOwnProfile={isOwnProfile}
+          onBioUpdated={(newBio) => {
+            setProfileUser(prev => ({ ...prev, bio: newBio }))
+          }}
+        />
 
         {!isOwnProfile && currentUser && (
           <FollowButton userId={profileUser.id} />

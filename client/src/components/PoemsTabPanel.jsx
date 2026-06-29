@@ -45,7 +45,7 @@ function PoemsTabPanel({ userId, mode }) {
   if (poems.length === 0) return <p className="font-text text-center text-muted-foreground mt-10">No poems found.</p>
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="max-w-2xl mx-auto w-full flex flex-col gap-8">
       {poems.map((poem) => <PoemCard key={poem.id} poem={poem} />)}
 
       <Pagination

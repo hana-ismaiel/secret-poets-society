@@ -1,7 +1,8 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Card, CardContent } from "@/components/ui/card"
+import UserBio from "./UserBio"
 
-function UserProfileCard({ user }) {
+function UserProfileCard({ user, isOwnProfile, onBioUpdated }) {
   if (!user) return null
 
   const joinedDate = new Date(user.created_at).toLocaleDateString("en-US", {
@@ -20,7 +21,15 @@ function UserProfileCard({ user }) {
         </Avatar>
 
         <h2 className="text-lg font-semibold">{user.username}</h2>
-        <p className="text-sm text-muted-foreground mt-1">Joined {joinedDate}</p>
+        <p className="text-sm text-muted-foreground mt-1 mb-4">Joined {joinedDate}</p>
+
+        <div className="w-full border-t pt-4 text-left flex">
+          <UserBio 
+            user={user} 
+            isOwnProfile={isOwnProfile} 
+            onBioUpdated={onBioUpdated} 
+          />
+        </div>
       </CardContent>
     </Card>
   )

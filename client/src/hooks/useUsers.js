@@ -15,5 +15,10 @@ export function useUsers() {
     return response.data;
   }
 
-  return { getUserById, searchUsers }
+  async function updateBio(bio) {
+    const response = await api.put(`/users/bio`, { bio });
+    return response.data;
+  }
+
+  return { getUserById, searchUsers, updateBio }
 }

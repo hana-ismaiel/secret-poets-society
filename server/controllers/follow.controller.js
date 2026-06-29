@@ -1,6 +1,6 @@
 const pool = require("../db");
 
-const USERS_PER_PAGE = 1;
+const USERS_PER_PAGE = 30;
 
 const toggleFollow = async (req, res) => {
   const { followingId } = req.params; // the person being followed/unfollowed
