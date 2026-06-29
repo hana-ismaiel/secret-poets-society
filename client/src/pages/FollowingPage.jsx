@@ -47,10 +47,10 @@ function FollowingPage() {
     return (
       <div className="font-text max-w-2xl mx-auto px-4 py-12 text-center">
         <p className="text-muted-foreground mb-4">
-          Sign in to see poems from people you follow
+          Create an account or sign in to see poems from people you follow
         </p>
-        <Link to="/login">
-          <Button>Sign In</Button>
+        <Link to="/register">
+          <Button>Create Account</Button>
         </Link>
       </div>
     )

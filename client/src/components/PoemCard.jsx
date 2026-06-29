@@ -18,7 +18,7 @@ function PoemCard({ poem, onDeleteSuccess }) {
       <CardHeader>
         <div className="flex items-center gap-2">
           <Link to={`/poems/${poem.id}`} className="hover:underline">
-            <CardTitle className="text-2xl font-bold">{poem.title}</CardTitle>
+            <CardTitle className="font-text text-2xl font-bold">{poem.title}</CardTitle>
           </Link>
           {poem.is_ai_generated && <AiGeneratedBadge />}
         </div>

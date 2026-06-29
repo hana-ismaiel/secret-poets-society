@@ -1,13 +1,15 @@
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, Link } from "react-router-dom"
 import { Sparkle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { useAi } from "@/hooks/useAi"
+import { useAuth } from "@/hooks/useAuth"
 
 function AiGenerationPage() {
   const navigate = useNavigate()
   const { generateAiPoem } = useAi()
+  const { user } = useAuth()
 
   const [prompt, setPrompt] = useState("")
   const [generating, setGenerating] = useState(false)
@@ -44,6 +46,19 @@ function AiGenerationPage() {
         isAiGenerated: true,
       },
     })
+  }
+
+  if (!user) {
+    return (
+      <div className="font-text max-w-2xl mx-auto px-4 py-12 text-center">
+        <p className="text-muted-foreground mb-4">
+          Create an account or sign in to use this feature
+        </p>
+        <Link to="/register">
+          <Button>Create Account</Button>
+        </Link>
+      </div>
+    )
   }
 
   return (

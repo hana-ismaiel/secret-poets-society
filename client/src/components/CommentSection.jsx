@@ -35,7 +35,7 @@ function CommentSection({ poemId }) {
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-4 mt-10">
+    <div className="max-w-2xl mx-auto px-4 pt-10 pb-16">
       <h2 className="font-text text-lg font-semibold mb-4">Comments</h2>
 
       <CommentForm poemId={poemId} onCommentCreated={handleCommentCreated} />

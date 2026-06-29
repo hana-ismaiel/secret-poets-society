@@ -130,24 +130,24 @@
     }
 }
 
-@utility font-title {
+.font-title {
   font-family: 'UoqMunThenKhung', serif;
 }
 
-@utility font-text {
+.font-text {
   font-family: 'PT Serif', serif;
 }
 
-@utility font-text-italic {
+.font-text-italic {
   font-family: 'PT Serif', serif;
   font-style: italic;
 }
 
-@utility bg-warm {
+.bg-warm {
   background-color: #F5F7ED;
 }
 
-@utility bg-poem {
+.bg-poem {
   background-color: #FEFFF7;
 }
 
