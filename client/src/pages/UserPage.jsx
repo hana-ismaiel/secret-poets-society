@@ -31,6 +31,10 @@ function UserPage() {
       try {
         const userData = await getUserByUsername(username)
         setProfileUser(userData)
+        const isOwnProfile = currentUser && currentUser.username === username
+        if (!isOwnProfile && (tab === "saved" || tab === "liked")) {
+          navigate(`/users/${username}/poems`)
+        }
       } catch (err) {
         console.error("User not found", err)
       } finally {
@@ -41,7 +45,7 @@ function UserPage() {
     loadProfile()
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [username])
+  }, [username, tab, currentUser])
 
   function handleTabChange(newTab) {
     navigate(`/users/${username}/${newTab}`)
