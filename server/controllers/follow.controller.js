@@ -117,7 +117,7 @@ const getFollowers = async (req, res) => {
     const totalPages = Math.ceil(totalUsers / limit);
 
     const followers = await pool.query(
-      `SELECT users.id, users.username, users.created_at
+      `SELECT users.id, users.username, users.created_at, users.bio, users.avatar_color
        FROM follows
        JOIN users ON follows.follower_id = users.id
        WHERE follows.following_id = $1
@@ -158,7 +158,7 @@ const getFollowing = async (req, res) => {
     const totalPages = Math.ceil(totalUsers / limit);
 
     const following = await pool.query(
-      `SELECT users.id, users.username, users.created_at
+      `SELECT users.id, users.username, users.created_at, users.bio, users.avatar_color
        FROM follows
        JOIN users ON follows.following_id = users.id
        WHERE follows.follower_id = $1

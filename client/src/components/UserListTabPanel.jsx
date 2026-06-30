@@ -41,7 +41,7 @@ function UserListTabPanel({ userId, mode }) {
   if (users.length === 0) return <p className="font-text text-center text-muted-foreground mt-10">No users found.</p>
 
   return (
-    <div className="max-w-2xl mx-auto w-full flex flex-col gap-8">
+    <div className="max-w-2xl mx-auto w-full flex flex-col">
       {users.map((user) => <UserListItem key={user.id} user={user} />)}
 
       <Pagination

@@ -47,6 +47,14 @@ function UserPage() {
     navigate(`/users/${id}/${newTab}`)
   }
 
+  function handleBioUpdated(updatedUser) {
+    setProfileUser(updatedUser)
+  }
+
+  function handleAvatarUpdated(updatedUser) {
+    setProfileUser(updatedUser)
+  }
+
   if (loading) return <LoadingSpinner />
   if (!profileUser) return <p className="text-center mt-10 text-red-500">User not found</p>
   if (isInvalidTab || !profileUser) return <NotFoundPage />
@@ -85,9 +93,8 @@ function UserPage() {
         <UserProfileCard 
           user={profileUser} 
           isOwnProfile={isOwnProfile}
-          onBioUpdated={(newBio) => {
-            setProfileUser(prev => ({ ...prev, bio: newBio }))
-          }}
+          onBioUpdated={handleBioUpdated}
+          onAvatarUpdated={handleAvatarUpdated}
         />
 
         {!isOwnProfile && currentUser && (

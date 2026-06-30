@@ -8,22 +8,20 @@ function UserBio({ user, isOwnProfile, onBioUpdated }) {
   const { updateBio } = useUsers()
   const [isEditing, setIsEditing] = useState(false)
   const [bioText, setBioText] = useState(user?.bio || "")
-  const [loading, setLoading] = useState(false)
+  const [saving, setSaving] = useState(false)
   const [error, setError] = useState("")
 
   async function handleSave() {
-    setLoading(true)
+    setSaving(true)
     setError("")
     try {
-      const updatedUserData = await updateBio(bioText)
+      const updatedUser = await updateBio(bioText)
       setIsEditing(false)
-      if (onBioUpdated) {
-        onBioUpdated(updatedUserData.bio)
-      }
+      onBioUpdated(updatedUser)
     } catch (err) {
       setError(err.response?.data?.message || "Failed to update bio")
     } finally {
-      setLoading(false)
+      setSaving(false)
     }
   }
 
@@ -43,27 +41,15 @@ function UserBio({ user, isOwnProfile, onBioUpdated }) {
           maxLength={500}
           rows={3}
           className="text-sm rounded-none resize-none font-text"
-          disabled={loading}
+          disabled={saving}
         />
         {error && <p className="text-xs text-red-500 font-text">{error}</p>}
-        <div className="flex justify-end gap-2">
-          <Button 
-            size="icon" 
-            variant="ghost" 
-            onClick={handleCancel} 
-            disabled={loading} 
-            className="h-8 w-8 text-muted-foreground cursor-pointer"
-          >
+        <div className="font-text flex justify-end gap-2">
+          <Button variant="outline" size="sm" onClick={handleCancel} className="cursor-pointer">
             <X size={16} />
           </Button>
-          <Button 
-            size="icon" 
-            variant="ghost" 
-            onClick={handleSave} 
-            disabled={loading} 
-            className="h-8 w-8 text-emerald-600 hover:text-emerald-700 cursor-pointer"
-          >
-            <Check size={16} />
+          <Button size="sm" onClick={handleSave} disabled={saving} className="cursor-pointer">
+            <Check size={16}/>
           </Button>
         </div>
       </div>

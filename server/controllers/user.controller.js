@@ -3,6 +3,9 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const USERS_PER_PAGE = 30;
+const ALLOWED_AVATAR_COLORS = [
+  "red", "orange", "yellow", "lime", "emerald", "teal", "cyan", "sky", "blue", "indigo", "violet", "purple", "pink", "rose"
+];
 
 const register = async (req, res) => {
   const { username, email, password } = req.body;
@@ -112,7 +115,7 @@ const getUserById = async (req, res) => {
 
   try {
     const user = await pool.query(
-      "SELECT id, username, created_at, bio FROM users WHERE id = $1",
+      "SELECT id, username, created_at, bio, avatar_color FROM users WHERE id = $1",
       [id]
     );
 
@@ -150,7 +153,7 @@ const searchUsers = async (req, res) => {
     const totalPages = Math.ceil(totalUsers / limit);
 
     const users = await pool.query(
-      `SELECT id, username, created_at
+      `SELECT id, username, created_at, bio, avatar_color
       FROM users
       WHERE username ILIKE $1
       ORDER BY username ASC
@@ -189,7 +192,7 @@ const updateBio = async (req, res) => {
   try {
     const updatedUser = await pool.query(
       `UPDATE users SET bio = $1 WHERE id = $2 
-      RETURNING id, username, bio, created_at`,
+      RETURNING id, username, email, bio, created_at, avatar_color`,
       [bio.trim(), userId]
     );
 
@@ -201,4 +204,27 @@ const updateBio = async (req, res) => {
   }
 };
 
-module.exports = { register, login, getUserById, searchUsers, updateBio };
+const updateAvatarColor = async (req, res) => {
+  const { avatarColor } = req.body;
+  const userId = req.user.id;
+
+  if (!ALLOWED_AVATAR_COLORS.includes(avatarColor)) {
+    return res.status(400).json({ message: "Invalid avatar color" });
+  }
+
+  try {
+    const updatedUser = await pool.query(
+      `UPDATE users SET avatar_color = $1 WHERE id = $2 
+      RETURNING id, username, email, created_at, bio, avatar_color`,
+      [avatarColor, userId]
+    );
+
+    res.status(200).json(updatedUser.rows[0]);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+module.exports = { register, login, getUserById, searchUsers, updateBio, updateAvatarColor };

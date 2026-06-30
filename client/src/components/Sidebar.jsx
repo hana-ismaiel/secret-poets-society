@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { useAuth } from "@/hooks/useAuth"
 
 const navItems = [
-  { label: "All Poems", path: "/", icon: Home },
+  { label: "Newest Poems", path: "/", icon: Home },
   { label: "Following", path: "/following", icon: Users },
   { label: "Popular", path: "/popular", icon: TrendingUp },
   { label: "Explore Themes", path: "/themes", icon: Tags },

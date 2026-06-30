@@ -20,5 +20,10 @@ export function useUsers() {
     return response.data;
   }
 
-  return { getUserById, searchUsers, updateBio }
+  async function updateAvatarColor(avatarColor) {
+  const response = await api.put("/users/avatar-color", { avatarColor })
+  return response.data
+}
+
+  return { getUserById, searchUsers, updateBio, updateAvatarColor }
 }
