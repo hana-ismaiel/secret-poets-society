@@ -11,14 +11,14 @@ function PoemCard({ poem, onDeleteSuccess }) {
   const isOwnPoem = currentUser && String(currentUser.id) === String(poem.author_id)
 
   return (
-    <Card className="mb-8 rounded-none relative bg-poem">
+    <Card className="mb-8 rounded-none relative bg-poem w-full max-w-2xl mx-auto overflow-hidden">
       <div className="absolute top-4 right-4 z-10">
         <PoemActions poem={poem} onDeleteSuccess={onDeleteSuccess}/>
       </div>
       <CardHeader>
         <div className="flex items-center gap-2">
           <Link to={`/poems/${poem.id}`} className="hover:underline">
-            <CardTitle className="font-text text-2xl font-bold">{poem.title}</CardTitle>
+            <CardTitle className="font-text text-2xl font-bold break-words">{poem.title}</CardTitle>
           </Link>
           {poem.is_ai_generated && <AiGeneratedBadge />}
         </div>
@@ -30,7 +30,7 @@ function PoemCard({ poem, onDeleteSuccess }) {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <p className="font-text whitespace-pre-line">{poem.content}</p>
+        <p className="font-text whitespace-pre-line break-words">{poem.content}</p>
         {poem.themes && poem.themes.length > 0 && (
           <div className="flex gap-2 mt-4">
             {poem.themes.map((theme) => (

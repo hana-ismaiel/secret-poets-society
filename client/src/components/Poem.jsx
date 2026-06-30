@@ -10,12 +10,12 @@ function Poem({ poem }) {
   const isOwnPoem = currentUser && String(currentUser.id) === String(poem.author_id)
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-12 relative">
+    <div className="max-w-2xl mx-auto px-4 py-12 relative w-full overflow-hidden">
       <div className="absolute top-12 right-4">
         <PoemActions poem={poem} />
       </div>
       <div className="flex items-center gap-2">
-        <h1 className="font-text text-xl font-bold mb-2">{poem.title}</h1>
+        <h1 className="font-text text-xl font-bold mb-2 break-words">{poem.title}</h1>
         {poem.is_ai_generated && <AiGeneratedBadge />}
       </div>
       
@@ -30,7 +30,7 @@ function Poem({ poem }) {
         </Link>
       </p>
 
-      <p className="font-text whitespace-pre-line text-md leading-relaxed">
+      <p className="font-text whitespace-pre-line text-md leading-relaxed break-words">
         {poem.content}
       </p>
 

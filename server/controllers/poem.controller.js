@@ -1,6 +1,8 @@
 const pool = require("../db");
 
 const POEMS_PER_PAGE = 10;
+const MAX_TITLE_LENGTH = 150;
+const MAX_CONTENT_LENGTH = 5000;
 const attachThemes = require("../utils/attachThemes");
 
 const createPoem = async (req, res) => {
@@ -9,6 +11,14 @@ const createPoem = async (req, res) => {
 
   if (!title || !content) {
     return res.status(400).json({ message: "Title and content are required" });
+  }
+
+  if (title.trim().length > MAX_TITLE_LENGTH) {
+    return res.status(400).json({ message: `Title cannot exceed ${MAX_TITLE_LENGTH} characters` });
+  }
+
+  if (content.trim().length > MAX_CONTENT_LENGTH) {
+    return res.status(400).json({ message: `Poem content cannot exceed ${MAX_CONTENT_LENGTH} characters` });
   }
 
   if (themeIds && themeIds.length > 3) {
@@ -76,6 +86,14 @@ const editPoem = async (req, res) => {
 
   if (!title || !content) {
     return res.status(400).json({ message: "Title and content are required" });
+  }
+
+  if (title.trim().length > MAX_TITLE_LENGTH) {
+    return res.status(400).json({ message: `Title cannot exceed ${MAX_TITLE_LENGTH} characters` });
+  }
+
+  if (content.trim().length > MAX_CONTENT_LENGTH) {
+    return res.status(400).json({ message: `Poem content cannot exceed ${MAX_CONTENT_LENGTH} characters` });
   }
 
   if (themeIds && themeIds.length > 3) {
