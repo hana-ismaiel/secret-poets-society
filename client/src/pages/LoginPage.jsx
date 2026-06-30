@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useNavigate, Link } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -11,8 +11,15 @@ function LoginPage() {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
-  const { login } = useAuth()
+  const { login, user: currentUser } = useAuth()
   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (currentUser) {
+      navigate("/")
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser])
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -25,6 +32,8 @@ function LoginPage() {
       setError(err.response?.data?.message || "Something went wrong")
     }
   }
+
+  if (currentUser) return null
 
   return (
     <div className="font-text min-h-screen flex items-center justify-center p-4 md:p-8">

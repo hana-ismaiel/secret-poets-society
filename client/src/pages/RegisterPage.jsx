@@ -1,5 +1,5 @@
 import { useNavigate, Link } from "react-router-dom"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -12,8 +12,15 @@ function RegisterPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
-  const { register } = useAuth()
+  const { register, user: currentUser } = useAuth()
   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (currentUser) {
+      navigate("/")
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser])
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -26,6 +33,8 @@ function RegisterPage() {
       setError(err.response?.data?.message || "Something went wrong")
     }
   }
+
+  if (currentUser) return null
 
   return (
     <div className="font-text min-h-screen flex items-center justify-center p-4 md:p-8">
