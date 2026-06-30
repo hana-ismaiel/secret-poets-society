@@ -35,7 +35,7 @@ function Comment({ comment, poemId, onReplyCreated, depth = 0 }) {
   return (
     <div className={indentClass}>
       <p className="font-text font-bold text-sm">
-        <Link to={`/users/${comment.user_id}`} className="hover:underline">
+        <Link to={`/users/${comment.username}`} className="hover:underline">
           {comment.username}
         </Link>
       </p>

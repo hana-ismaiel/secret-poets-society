@@ -30,7 +30,7 @@ function App() {
             <Route path="/poems/create" element={<CreatePoemPage />} />
             <Route path="/poems/edit/:id" element={<EditPoemPage />} />
             <Route path="/poems/:id" element={<PoemPage />} />
-            <Route path="/users/:id/:tab?" element={<UserPage />} />
+            <Route path="/users/:username/:tab?" element={<UserPage />} />
             <Route path="/following" element={<FollowingPage />} />
             <Route path="/themes" element={<ThemesPage />} />
             <Route path="/themes" element={<ThemesPage />} />

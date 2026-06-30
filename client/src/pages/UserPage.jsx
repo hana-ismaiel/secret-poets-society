@@ -13,15 +13,15 @@ import { useUsers } from "@/hooks/useUsers"
 const VALID_TABS = ["poems", "saved", "liked", "followers", "following"]
 
 function UserPage() {
-  const { id, tab } = useParams()
+  const { username, tab } = useParams()
   const navigate = useNavigate()
   const { user: currentUser } = useAuth()
-  const { getUserById } = useUsers()
+  const { getUserByUsername } = useUsers()
 
   const [profileUser, setProfileUser] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  const isOwnProfile = currentUser && String(currentUser.id) === String(id)
+  const isOwnProfile = currentUser && currentUser.username === username
   const isInvalidTab = tab !== undefined && !VALID_TABS.includes(tab)
   const activeTab = !isInvalidTab && tab ? tab : "poems" // Default to "poems" tab if none provided
 
@@ -29,7 +29,7 @@ function UserPage() {
     async function loadProfile() {
       setLoading(true)
       try {
-        const userData = await getUserById(id)
+        const userData = await getUserByUsername(username)
         setProfileUser(userData)
       } catch (err) {
         console.error("User not found", err)
@@ -41,10 +41,10 @@ function UserPage() {
     loadProfile()
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id])
+  }, [username])
 
   function handleTabChange(newTab) {
-    navigate(`/users/${id}/${newTab}`)
+    navigate(`/users/${username}/${newTab}`)
   }
 
   function handleBioUpdated(updatedUser) {
@@ -74,16 +74,16 @@ function UserPage() {
 
         {(activeTab === "poems" || activeTab === "saved" || activeTab === "liked") && (
           <PoemsTabPanel
-            key={`${id}-${activeTab}`}
-            userId={id}
+            key={`${profileUser.id}-${activeTab}`}
+            userId={profileUser.id}
             mode={activeTab}
           />
         )}
 
         {(activeTab === "followers" || activeTab === "following") && (
           <UserListTabPanel
-            key={`${id}-${activeTab}`}
-            userId={id}
+            key={`${profileUser.id}-${activeTab}`}
+            userId={profileUser.id}
             mode={activeTab}
           />
         )}

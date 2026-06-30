@@ -24,7 +24,7 @@ function PoemCard({ poem, onDeleteSuccess }) {
         </div>
         <CardDescription className="font-text text-lg">
             by {" "}
-            <Link to={`/users/${poem.author_id}`} className="font-text-italic text-primary hover:underline font-medium">
+            <Link to={`/users/${poem.author}`} className="font-text-italic text-primary hover:underline font-medium">
                 {poem.author}
             </Link>
         </CardDescription>

@@ -6,12 +6,18 @@ const USERS_PER_PAGE = 30;
 const ALLOWED_AVATAR_COLORS = [
   "red", "orange", "yellow", "lime", "emerald", "teal", "cyan", "sky", "blue", "indigo", "violet", "purple", "pink", "rose"
 ];
+const USERNAME_REGEX = /^[a-zA-Z0-9_-]+$/;
 
 const register = async (req, res) => {
   const { username, email, password } = req.body;
 
   if (!username || !email || !password) {
     return res.status(400).json({ message: "All fields are required" });
+  }
+  if (!USERNAME_REGEX.test(username)) {
+    return res.status(400).json({ 
+      message: "Username can only contain letters, numbers, hyphens, and underscores" 
+    });
   }
   if (username.length > 50) {
     return res.status(400).json({ message: "Username must be 50 characters or less" });
@@ -131,6 +137,27 @@ const getUserById = async (req, res) => {
   }
 };
 
+const getUserByUsername = async (req, res) => {
+  const { username } = req.params;
+
+  try {
+    const user = await pool.query(
+      "SELECT id, username, created_at, bio, avatar_color FROM users WHERE username = $1",
+      [username]
+    );
+
+    if (user.rows.length === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(user.rows[0]);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 const searchUsers = async (req, res) => {
   const q = req.query.q;
   const page = parseInt(req.query.page) || 1;
@@ -227,4 +254,4 @@ const updateAvatarColor = async (req, res) => {
   }
 };
 
-module.exports = { register, login, getUserById, searchUsers, updateBio, updateAvatarColor };
+module.exports = { register, login, getUserById, getUserByUsername, searchUsers, updateBio, updateAvatarColor };

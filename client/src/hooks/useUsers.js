@@ -3,7 +3,12 @@ import api from "@/lib/api"
 export function useUsers() {
   
   async function getUserById(id) {
-    const response = await api.get(`/users/${id}`)
+    const response = await api.get(`/users/id/${id}`)
+    return response.data
+  }
+
+  async function getUserByUsername(username) {
+    const response = await api.get(`/users/username/${username}`)
     return response.data
   }
 
@@ -25,5 +30,5 @@ export function useUsers() {
   return response.data
 }
 
-  return { getUserById, searchUsers, updateBio, updateAvatarColor }
+  return { getUserById, getUserByUsername, searchUsers, updateBio, updateAvatarColor }
 }
