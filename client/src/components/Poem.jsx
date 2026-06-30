@@ -15,12 +15,12 @@ function Poem({ poem }) {
         <PoemActions poem={poem} />
       </div>
       <div className="flex items-center gap-2">
-        <h1 className="font-text text-3xl font-bold mb-2">{poem.title}</h1>
+        <h1 className="font-text text-xl font-bold mb-2">{poem.title}</h1>
         {poem.is_ai_generated && <AiGeneratedBadge />}
       </div>
       
 
-      <p className="text-lg mb-8">
+      <p className="text-md mb-8">
         by{" "}
         <Link
           to={`/users/${poem.author}`}
@@ -30,7 +30,7 @@ function Poem({ poem }) {
         </Link>
       </p>
 
-      <p className="font-text whitespace-pre-line text-lg leading-relaxed">
+      <p className="font-text whitespace-pre-line text-md leading-relaxed">
         {poem.content}
       </p>
 

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { useAi } from "@/hooks/useAi"
 import { useAuth } from "@/hooks/useAuth"
+import LoadingSpinner from "@/components/LoadingSpinner"
 
 function AiGenerationPage() {
   const navigate = useNavigate()
@@ -70,7 +71,7 @@ function AiGenerationPage() {
 
       <form onSubmit={handleGenerate} className="flex flex-col gap-4">
         <Textarea
-          placeholder="Enter a prompt for your poem (e.g. 'a quiet winter afternoon', ')"
+          placeholder="Enter a prompt for your poem (e.g. 'a quiet walk in the woods', 'short haiku about friendship')"
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
           rows={4}
@@ -84,10 +85,16 @@ function AiGenerationPage() {
         </Button>
       </form>
 
-      {result && (
+      {generating && (
+        <div className="flex flex-col items-center justify-center gap-3 mt-12 pt-6 border-t">
+          <LoadingSpinner />
+        </div>
+      )}
+
+      {!generating && result && (
         <div className="font-text mt-10 border-t pt-8">
-          <h2 className="text-2xl font-bold mb-2">{result.title}</h2>
-          <p className="whitespace-pre-line text-lg leading-relaxed mb-6">
+          <h2 className="text-xl font-bold mb-2">{result.title}</h2>
+          <p className="whitespace-pre-line text-md leading-relaxed mb-6">
             {result.content}
           </p>
 
