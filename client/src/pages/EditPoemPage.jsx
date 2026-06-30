@@ -1,18 +1,22 @@
 import { useState, useEffect } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { usePoems } from "@/hooks/usePoems"
+import { useAuth } from "@/hooks/useAuth"
 import LoadingSpinner from "@/components/LoadingSpinner"
 import PoemForm from "@/components/PoemForm"
+import ForbiddenPage from "./ForbiddenPage"
+import NotFoundPage from "./NotFoundPage"
 
 function EditPoemPage() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { user: currentUser } = useAuth()
   const { editPoem, getPoemById } = usePoems() 
 
   const [poem, setPoem] = useState(null)
   const [initialLoading, setInitialLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
-  const [fetchError, setFetchError] = useState("")
+  const [error, setError] = useState("")
 
   useEffect(() => {
     async function loadPoem() {
@@ -20,7 +24,7 @@ function EditPoemPage() {
         const data = await getPoemById(id)
         setPoem(data)
       } catch (err) {
-        setFetchError(err.response?.data?.message || "Could not retrieve poem data")
+        setError(err.response?.data?.message || "Could not retrieve poem data")
       } finally {
         setInitialLoading(false)
       }
@@ -40,8 +44,9 @@ function EditPoemPage() {
   }
 
   if (initialLoading) return <LoadingSpinner />
-  if (fetchError) return <p className="font-text text-center text-red-500 mt-10">{fetchError}</p>
-  if (!poem) return <p className="font-text text-center text-muted-foreground mt-10">Poem not found.</p>
+  if (!poem) return <NotFoundPage />
+  if (poem && String(currentUser.id) !== String(poem.author_id)) return <ForbiddenPage />
+  if (error) return <p className="font-text text-center text-red-500 mt-10">{error}</p>
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-12">

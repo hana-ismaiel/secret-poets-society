@@ -5,6 +5,7 @@ import Pagination from "@/components/Pagination"
 import LoadingSpinner from "@/components/LoadingSpinner"
 import { useThemes } from "@/hooks/useThemes"
 import { usePoems } from "@/hooks/usePoems"
+import NotFoundPage from "./NotFoundPage"
 
 function ThemeDetailPage() {
   const { pathname } = useParams()
@@ -19,7 +20,7 @@ function ThemeDetailPage() {
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [poemsLoading, setPoemsLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [poemsError, setPoemsError] = useState(null)
 
   // Determine the theme using the pathname in the url
   useEffect(() => {
@@ -50,7 +51,7 @@ function ThemeDetailPage() {
         setPoems(data.poems)
         setTotalPages(data.pagination.totalPages)
       } catch (err) {
-        setError(err.response?.data?.message || "Something went wrong")
+        setPoemsError(err.response?.data?.message || "Something went wrong")
       } finally {
         setPoemsLoading(false)
       }
@@ -65,9 +66,8 @@ function ThemeDetailPage() {
   }
 
   if (themeLoading) return <LoadingSpinner />
-  if (themeError) {
-    return <p className="text-center text-red-500 mt-10">{themeError}</p>
-  }
+  if (!theme) return <NotFoundPage />
+  if (themeError) return <p className="text-center text-red-500 mt-10">{themeError}</p>
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
@@ -78,8 +78,8 @@ function ThemeDetailPage() {
 
         {poemsLoading ? (
           <LoadingSpinner />
-        ) : error ? (
-          <p className="font-text text-center text-red-500 mt-6">{error}</p>
+        ) : poemsError ? (
+          <p className="font-text text-center text-red-500 mt-6">{poemsError}</p>
         ) : poems.length === 0 ? (
           <p className="font-text text-center text-muted-foreground mt-6">
             No poems created in this theme yet

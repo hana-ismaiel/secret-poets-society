@@ -1,19 +1,19 @@
 import { Link } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 
-function NotFoundPage() {
+function ForbiddenPage() {
   return (
     <div className="font-text min-h-[70vh] flex flex-col items-center justify-center text-center p-6 max-w-md mx-auto gap-4">
-      <h1 className="text-6xl md:text-7xl font-extrabold tracking-tight text-lime-600">
-        404
+      <h1 className="text-6xl md:text-7xl font-extrabold tracking-tight text-destructive">
+        403
       </h1>
       
       <div className="flex flex-col gap-1.5">
         <h2 className="text-xl md:text-2xl font-bold tracking-tight">
-          Page Not Found
+          Access Forbidden
         </h2>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          The page you are looking for doesn't exist
+          You are not authorized to view this page
         </p>
       </div>
 
@@ -26,4 +26,4 @@ function NotFoundPage() {
   )
 }
 
-export default NotFoundPage
+export default ForbiddenPage

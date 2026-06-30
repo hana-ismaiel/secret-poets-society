@@ -4,6 +4,7 @@ import Poem from "@/components/Poem"
 import CommentSection from "@/components/CommentSection"
 import { usePoems } from "@/hooks/usePoems"
 import LoadingSpinner from "@/components/LoadingSpinner"
+import NotFoundPage from "./NotFoundPage"
 
 function PoemPage() {
   const { id } = useParams()
@@ -28,6 +29,7 @@ function PoemPage() {
   }, [id, getPoemById])
 
   if (loading) return <LoadingSpinner />
+  if (!poem) return <NotFoundPage />
   if (error) return <p className="font-text text-center mt-10 text-red-500">{error}</p>
 
   return (

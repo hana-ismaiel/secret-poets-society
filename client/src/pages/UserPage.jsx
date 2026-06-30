@@ -7,6 +7,7 @@ import PoemsTabPanel from "@/components/PoemsTabPanel"
 import UserListTabPanel from "@/components/UserListTabPanel"
 import LoadingSpinner from "@/components/LoadingSpinner"
 import NotFoundPage from "@/pages/NotFoundPage"
+import ForbiddenPage from "@/pages/ForbiddenPage"
 import { useAuth } from "@/hooks/useAuth"
 import { useUsers } from "@/hooks/useUsers"
 
@@ -20,6 +21,7 @@ function UserPage() {
 
   const [profileUser, setProfileUser] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState("")
 
   const isOwnProfile = currentUser && currentUser.username === username
   const isInvalidTab = tab !== undefined && !VALID_TABS.includes(tab)
@@ -31,12 +33,8 @@ function UserPage() {
       try {
         const userData = await getUserByUsername(username)
         setProfileUser(userData)
-        const isOwnProfile = currentUser && currentUser.username === username
-        if (!isOwnProfile && (tab === "saved" || tab === "liked")) {
-          navigate(`/users/${username}/poems`)
-        }
       } catch (err) {
-        console.error("User not found", err)
+        setError(err.response?.data?.message || "Could not retrieve user data")
       } finally {
         setLoading(false)
       }
@@ -45,7 +43,7 @@ function UserPage() {
     loadProfile()
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [username, tab, currentUser])
+  }, [username])
 
   function handleTabChange(newTab) {
     navigate(`/users/${username}/${newTab}`)
@@ -60,8 +58,9 @@ function UserPage() {
   }
 
   if (loading) return <LoadingSpinner />
-  if (!profileUser) return <p className="text-center mt-10 text-red-500">User not found</p>
   if (isInvalidTab || !profileUser) return <NotFoundPage />
+  if ((activeTab === "saved" || activeTab === "liked") && !isOwnProfile) return <ForbiddenPage />
+  if (error) return <p className="font-text text-center text-red-500 mt-10">{error}</p>
 
   const tabTitles = {
     poems: isOwnProfile ? "My Poems" : `${profileUser.username}'s Poems`,
