@@ -24,13 +24,12 @@ app.use("/saved", saveRoutes);
 app.use("/follows", followRoutes);
 app.use("/ai", aiRoutes);
 
+app.get("/", (req, res) => {
+  res.send("✅");
+});
 
 app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });
-});
-
-app.get("/", (req, res) => {
-  res.send("✅");
 });
 
 const PORT = process.env.PORT || 3001;
