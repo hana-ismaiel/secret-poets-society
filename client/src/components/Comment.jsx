@@ -51,7 +51,7 @@ function Comment({ comment, poemId, onReplyCreated, depth = 0 }) {
         </button>
       )}
 
-      {showReplyForm && (
+      {user && showReplyForm && (
         <div className="font-text mt-2 max-w-md">
           <Textarea
             placeholder="Write a reply..."

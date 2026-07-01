@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { Link } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { useComments } from "@/hooks/useComments"
@@ -27,13 +28,15 @@ function CommentForm({ poemId, onCommentCreated }) {
   return (
     <div className="font-text mb-6">
       <Textarea
-        placeholder="What are your thoughts?"
+        placeholder={user ? "What are your thoughts?" : "Log in to share your thoughts..."}
         value={content}
-        onFocus={() => setIsWriting(true)}
+        onFocus={() => user && setIsWriting(true)}
         onChange={(e) => setContent(e.target.value)}
+        disabled={!user}
+        className={!user ? "bg-muted/50 cursor-not-allowed" : ""}
       />
 
-      {isWriting && (
+      {user && isWriting && (
         <div className="font-text flex gap-2 mt-2 justify-end">
           <Button variant="outline" onClick={handleCancel}>
             Cancel
@@ -42,6 +45,15 @@ function CommentForm({ poemId, onCommentCreated }) {
             Comment
           </Button>
         </div>
+      )}
+
+      {!user && (
+        <p className="text-xs text-muted-foreground mt-2">
+          Want to join the conversation?{" "}
+          <Link to="/login" className="text-primary underline font-medium hover:text-lime-600">
+            Sign in to comment
+          </Link>
+        </p>
       )}
     </div>
   )
