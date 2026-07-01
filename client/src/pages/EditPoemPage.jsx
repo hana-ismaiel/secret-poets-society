@@ -46,6 +46,7 @@ function EditPoemPage() {
   }
 
   if (initialLoading) return <LoadingSpinner />
+  if (!currentUser) return <ForbiddenPage />
   if (!poem) return <NotFoundPage />
   if (poem && String(currentUser.id) !== String(poem.author_id)) return <ForbiddenPage />
   if (error) return <p className="font-text text-center text-red-500 mt-10">{error}</p>
