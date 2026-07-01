@@ -14,7 +14,7 @@ const app = express();
 
 const allowedOrigins = [
   'http://localhost:5173', // local development
-  'https://secret-poets-society.vercel.app/', // deployed app
+  'https://secret-poets-society.vercel.app', // deployed app
 ]
 
 app.use(cors({
