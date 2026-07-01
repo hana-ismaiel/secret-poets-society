@@ -12,7 +12,21 @@ const aiRoutes = require("./routes/ai.route.js")
 
 const app = express();
 
-app.use(cors());
+const allowedOrigins = [
+  'http://localhost:5173', // local development
+  'https://secret-poets-society.vercel.app/', // deployed app
+]
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
+  credentials: true,
+}))
 app.use(express.json());
 
 app.use("/users", userRoutes);
