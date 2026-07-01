@@ -12,3 +12,6 @@ client/dist/
 # OS files
 .DS_Store
 Thumbs.db
+
+client/.env
+client/.env.local
