@@ -6,6 +6,7 @@ import LoadingSpinner from "@/components/LoadingSpinner"
 import PoemForm from "@/components/PoemForm"
 import ForbiddenPage from "./ForbiddenPage"
 import NotFoundPage from "./NotFoundPage"
+import { toast } from "sonner"
 
 function EditPoemPage() {
   const { id } = useParams()
@@ -36,6 +37,7 @@ function EditPoemPage() {
     setSubmitting(true)
     try {
       await editPoem(id, updatedFields)
+      toast.success("Poem modified successfully")
       navigate(`/poems/${id}`)
     } catch (err) {
       setSubmitting(false)

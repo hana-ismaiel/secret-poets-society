@@ -2,6 +2,7 @@ import { useState } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import { usePoems } from "@/hooks/usePoems"
 import PoemForm from "@/components/PoemForm"
+import { toast } from "sonner"
 
 function CreatePoemPage() {
   const navigate = useNavigate()
@@ -20,6 +21,7 @@ function CreatePoemPage() {
         ...formData,
         isAiGenerated,
       })
+      toast.success("Poem created successfully")
       navigate(`/poems/${newPoem.id}`)
     } catch (err) {
       setSubmitting(false)

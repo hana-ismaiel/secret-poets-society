@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useAuth } from "@/hooks/useAuth"
+import { toast } from "sonner"
 
 import backgroundImage from "../assets/login-register-image.jpg" 
 
@@ -28,6 +29,7 @@ function RegisterPage() {
 
     try {
       await register(username, email, password)
+      toast.success("Account created successfully")
       navigate("/login")
     } catch (err) {
       setError(err.response?.data?.message || "Something went wrong")

@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router-dom"
+import { Toaster } from "sonner";
 import Navbar from "./components/Navbar"
 import Sidebar from "./components/Sidebar"
 import HomePage from "./pages/HomePage"
@@ -19,6 +20,7 @@ import AiGenerationPage from "./pages/AiGenerationPage"
 function App() {
   return (
     <>
+      <Toaster />
       <Navbar />
       <div className="flex">
         <Sidebar />

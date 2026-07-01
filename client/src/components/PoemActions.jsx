@@ -20,6 +20,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+import { toast } from "sonner"
 
 function PoemActions({ poem, onDeleteSuccess }) {
   const navigate = useNavigate()
@@ -35,6 +36,7 @@ function PoemActions({ poem, onDeleteSuccess }) {
     try {
       await deletePoem(poem.id)
       setOpen(false)
+      toast.success("Poem deleted successfully")
       if (onDeleteSuccess) {
         onDeleteSuccess(poem.id) // Pass deleted poem ID to the callback
       } else {
