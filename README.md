@@ -54,7 +54,7 @@ PORT=3001
 5. Run using command `npm run dev` (server will run on `http://localhost:3001`)
 
 #### Frontend
-1. Navigate to the client folder: `cd ../client
+1. Navigate to the client folder: `cd ../client`
 2. Install dependencies: `npm install`
 3. Create a `.env` file inside the root of your `/client` directory and declare runtime variables:
 ```
