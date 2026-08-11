@@ -40,7 +40,7 @@ function Comment({ comment, poemId, onReplyCreated, depth = 0 }) {
         </Link>
       </p>
 
-      <p className="font-text">{comment.content}</p>
+      <p className="font-text break-words">{comment.content}</p>
 
       {user && (
         <button
